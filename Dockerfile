@@ -6,7 +6,6 @@ ENV HOME=/home/ubuntu
 USER ubuntu
 COPY app_server.py gunicorn_config.py /home/ubuntu/
 COPY src /home/ubuntu/src
-COPY templates /home/ubuntu/templates
 COPY tests /home/ubuntu/tests
 WORKDIR /home/ubuntu/
 EXPOSE 8000

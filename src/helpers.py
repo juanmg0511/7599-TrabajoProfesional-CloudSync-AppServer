@@ -43,7 +43,7 @@ def config_log():
                                "\".")
     appServer.app.logger.info("AuthServer base URL is: " +
                               str(appServer.api_auth_client_url) +
-                              " minutes.")
+                              "\".")
 
     return 0
 

@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "079c4f3e-94b2-4974-8856-40de03956edb",
+		"name": "AppServer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21162579"
+	},
+	"item": [
+		{
+			"name": "Home",
+			"item": [
+				{
+					"name": "Home",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1/ping",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1/status",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request Log",
+			"item": [
+				{
+					"name": "View Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/requestlog?startdate=2022-05-25&enddate=2022-05-30&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"cfd42239-74f0-47af-bdff-b48e32ab9746\"}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"requestlog"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-05-25"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-05-30"
+								},
+								{
+									"key": "filter",
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"cfd42239-74f0-47af-bdff-b48e32ab9746\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

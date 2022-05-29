@@ -8,16 +8,22 @@ services:
     container_name: app-server-flask
     restart: unless-stopped
     environment:
-      #GUNICORN_LOG_LEVEL - The granularity of log output
-      #A string of "debug", "info", "warning", "error", "critical"
+      # GUNICORN_LOG_LEVEL - The granularity of log output
+      # A string of "debug", "info", "warning", "error", "critical"
       GUNICORN_LOG_LEVEL: "debug"
-      #Setear la cantidad de workers a utilizar por Gunicorn
-      #https://devcenter.heroku.com/articles/python-gunicorn
+      # Setear la cantidad de workers a utilizar por Gunicorn
+      # https://devcenter.heroku.com/articles/python-gunicorn
       GUNICORN_WORKERS: 4
-      #Setear en True or False, solo aplica para correr desde Python (o sea nunca)
+      # Setear en True or False, solo aplica para correr desde Python (o sea nunca)
       APP_DEBUG: "True"
       APP_PORT: 8000
-      #Datos para conectare a la DB
+      # Setear el entorno en que corre el server
+      # Puede ser "DEV", "QA", "PROD"
+      APP_ENV: "DEV"      
+      # Datos para conectarse al AuthServer
+      API_AUTH_CLIENT_ID: "ef00a570-7cfc-4638-8cad-d085fd98b6e3"
+      API_AUTH_CLIENT_URL: "http://127.0.0.1:81"
+      # Datos para conectare a la DB
       MONGODB_DATABASE: app-server-db
       MONGODB_USERNAME: appserveruser
       MONGODB_PASSWORD: 123456
@@ -49,12 +55,12 @@ services:
       MONDODB_LOG_DIR: /dev/null
     volumes:
       - mongodbdata:/data/db
-      #Si el volumen de arriba no existe, corremos el script mongoinit.sh para agregar el usuario
-      #de aplicacion e inicializar la base de datos
+      # Si el volumen de arriba no existe, corremos el script mongoinit.sh para agregar el usuario
+      # de aplicacion e inicializar la base de datos
       - "./mongoinit/:/docker-entrypoint-initdb.d/"
-    #Exponemos el puerto para administrar la DB directamente, durante el desarrollo
-    #ports:
-       #- "27017:27017"
+    # Exponemos el puerto para administrar la DB directamente, durante el desarrollo
+    # ports:
+       # - "27017:27017"
     networks:
       - backend
 

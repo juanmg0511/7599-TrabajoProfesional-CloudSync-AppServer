@@ -1,10 +1,12 @@
 # CloudSync - AppServer - Gunicorn configuration file.
 
-#Importacion de librerias necesarias
-#OS para leer variables de entorno y multiprocessing para configurar los threads y workers
-import os, multiprocessing
+# Importacion de librerias necesarias
+# OS para leer variables de entorno y multiprocessing para configurar los
+# threads y workers
+import os
+import multiprocessing
 
-#Importacion del archivo principal
+# Importacion del archivo principal
 import app_server as appServer
 
 # Server socket
@@ -23,7 +25,8 @@ import app_server as appServer
 #       Must be a positive integer. Generally set in the 64-2048
 #       range.
 #
-bind = '0.0.0.0:' + str(os.environ.get("APP_PORT", os.environ.get("PORT", 8000)))
+bind = '0.0.0.0:' + \
+       str(os.environ.get("APP_PORT", os.environ.get("PORT", 8000)))
 backlog = 2048
 #
 # Worker processes
@@ -68,7 +71,8 @@ backlog = 2048
 #
 #       A positive integer. Generally set in the 1-5 seconds range.
 #
-workers = os.environ.get("GUNICORN_WORKERS", (1 + (multiprocessing.cpu_count() * 2)))
+workers = os.environ.get("GUNICORN_WORKERS",
+                         (1 + (multiprocessing.cpu_count() * 2)))
 threads = workers
 worker_class = 'gthread'
 worker_connections = 1000
@@ -124,7 +128,7 @@ spew = False
 #
 daemon = False
 raw_env = None
-pidfile = 'auth_server.pid'
+pidfile = 'app_server.pid'
 umask = 0
 user = None
 group = None
@@ -140,11 +144,14 @@ tmp_upload_dir = None
 #
 #       A string of "debug", "info", "warning", "error", "critical"
 #
-logfile = '/home/ubuntu/logs/auth_server.log'
+logfile = '/home/ubuntu/logs/app_server.log'
 loglevel = str(os.environ.get("GUNICORN_LOG_LEVEL", "debug"))
 errorlog = '-'
 accesslog = '-'
-access_log_format = 'remote-ip=%(h)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" time="%(T)s" process-id="%(p)s" request-id-i="%({x-request-id}i)s" request-id-o="%({x-request-id}o)s"'
+access_log_format = 'remote-ip=%(h)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s"' + \
+                    ' "%(a)s" time="%(T)s" process-id="%(p)s"' + \
+                    ' request-id-i="%({x-request-id}i)s"' + \
+                    ' request-id-o="%({x-request-id}o)s"'
 #
 # Process naming
 #
@@ -157,7 +164,7 @@ access_log_format = 'remote-ip=%(h)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" t
 #
 #       A string or None to choose a default of something like 'gunicorn'.
 #
-proc_name = 'auth_server'
+proc_name = 'app_server'
 #
 # Server hooks
 #
@@ -177,32 +184,42 @@ proc_name = 'auth_server'
 #
 on_starting = appServer.on_starting
 
+
 def post_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
+
 
 def pre_fork(server, worker):
     pass
 
+
 def pre_exec(server):
     server.log.info("Forked child, re-executing.")
+
 
 def when_ready(server):
     server.log.info("Server is ready. Spawning workers")
 
+
 def worker_int(worker):
     worker.log.info("worker received INT or QUIT signal")
 
-    ## Get traceback info
-    import threading, sys, traceback
+    # Get traceback info
+    import threading
+    import sys
+    import traceback
     id2name = {th.ident: th.name for th in threading.enumerate()}
     code = []
     for threadId, stack in sys._current_frames().items():
-        code.append("\n# Thread: %s(%d)" % (id2name.get(threadId,""), threadId))
+        code.append(
+            "\n# Thread: %s(%d)" % (id2name.get(threadId, ""), threadId))
         for filename, lineno, name, line in traceback.extract_stack(stack):
-            code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
+            code.append(
+                'File: "%s", line %d, in %s' % (filename, lineno, name))
             if line:
                 code.append("  %s" % (line.strip()))
     worker.log.debug("\n".join(code))
+
 
 def worker_abort(worker):
     worker.log.info("worker received SIGABRT signal")

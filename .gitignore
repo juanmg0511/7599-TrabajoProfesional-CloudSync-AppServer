@@ -1,2 +1,5 @@
 
 *.pyc
+.vscode/settings.json
+.DS_Store
+7599-AppServer/

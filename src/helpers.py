@@ -8,14 +8,20 @@
 
 # Importacion de librerias necesarias
 # OS para leer variables de entorno y logging para escribir los logs
+import uuid
 from datetime import datetime
 # Flask, para la implementacion del servidor REST
+from flask import g
+from flask import request
 from flask_log_request_id import current_request_id
+from http import HTTPStatus
 # Wraps, para implementacion de decorators
 from functools import wraps
 
 # Importacion del archivo principal
 import app_server as appServer
+# Importacion del cliente de AuthServer
+from src import authserver_client
 
 
 # Decorator que loguea el request ID de los headers como info
@@ -30,6 +36,53 @@ def log_reqId(view_function):
     return check_and_log_req_id
 
 
+# Decorator que chequea si el toquen del request es valido
+def check_token(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        session_token = request.headers.get("X-Auth-Token")
+        if (not session_token):
+            CheckSessionResponse = {
+                "code": -1,
+                "message": "Authorization token required.",
+                "data": None
+            }
+            return return_request(CheckSessionResponse,
+                                  HTTPStatus.UNAUTHORIZED)
+        response = authserver_client.AuthAPIClient.get_session(session_token)
+        if (response.status_code != HTTPStatus.OK):
+            return response.json(), response.status_code
+        g.session_token = session_token
+        g.session_username = response.json()["username"]
+        return f(*args, **kwargs)
+    return wrapper
+
+
+# Funcion que devuelve y guarda el requestID actual, o genera uno nuevo en
+# caso de encontrarse vacio
+def request_id():
+    if getattr(g, 'request_id', None):
+        return g.request_id
+
+    headers = request.headers
+
+    original_request_id = headers.get("X-Request-ID")
+    g.request_id = str(original_request_id or uuid.uuid4())
+
+    return g.request_id
+
+
+# Funcion que guarda el user agent del request actual
+def user_agent():
+    g.user_agent = request.headers.get('User-Agent', '*')
+
+
+# Funcion que detecta la presencia del header X-Admin
+# y guarda el resultado
+def is_admin():
+    g.session_admin = request.headers.get("X-Admin", "").lower() == "true"
+
+
 # Funcion que loguea los parametros configurados en variables de entorno
 def config_log():
 
@@ -41,8 +94,14 @@ def config_log():
     appServer.app.logger.debug("API key for AuthServer is: \"" +
                                str(appServer.api_auth_client_id) +
                                "\".")
-    appServer.app.logger.info("AuthServer base URL is: " +
+    appServer.app.logger.info("AuthServer base URL is: \"" +
                               str(appServer.api_auth_client_url) +
+                              "\".")
+    appServer.app.logger.info("AuthServer API path is: \"" +
+                              str(appServer.api_auth_client_path) +
+                              "\".")
+    appServer.app.logger.info("AuthServer API version is: \"" +
+                              str(appServer.api_auth_client_version) +
                               "\".")
 
     return 0

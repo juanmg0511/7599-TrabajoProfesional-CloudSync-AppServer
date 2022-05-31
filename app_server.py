@@ -12,6 +12,7 @@ import os
 import logging
 # Flask, para la implementacion del servidor REST
 from flask import Flask
+from flask import g
 from flask_restful import Api
 from flask_log_request_id import RequestID
 from flask_cors import CORS
@@ -19,7 +20,7 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 
 # Importacion de clases necesarias
-from src import home, requestlog, helpers
+from src import home, authserver_relay, requestlog, helpers
 
 # Version de API y Server
 api_version = "1"
@@ -34,6 +35,8 @@ app_port_default = 8000
 app_env_default = "DEV"
 api_auth_client_id_default = "44dd22ca-836d-40b6-aa49-7981ded03667"
 api_auth_client_url_default = "http://127.0.0.1:81"
+api_auth_client_path_default = "api"
+api_auth_client_version_default = "v1"
 
 # Agregamos un root para todos los enpoints, con la api version
 api_path = "/api/v" + api_version
@@ -78,6 +81,10 @@ api_auth_client_id = os.environ.get("API_AUTH_CLIENT_ID",
 # Lectura de la URL de conexion al AuthServer
 api_auth_client_url = os.environ.get("API_AUTH_CLIENT_URL",
                                      api_auth_client_url_default)
+api_auth_client_path = os.environ.get("API_AUTH_CLIENT_PATH",
+                                      api_auth_client_path_default)
+api_auth_client_version = os.environ.get("API_AUTH_CLIENT_VERSION",
+                                         api_auth_client_version_default)
 
 
 # Inicializacion - para cuando ejecuta gunicorn + flask
@@ -105,6 +112,19 @@ def on_starting(server):
 def before_request():
     app.logger.debug(helpers.log_request_id() +
                      'Excecuting before request actions.')
+    # Valores necesarios para procesar los requests
+    g.request_id = None
+    g.user_agent = None
+    g.session_token = None
+    g.session_admin = None
+    # Inicializacion de valores
+    # El token de sesion se iniciza por medio de
+    # helpers.check_token, utilizado como decorator
+    # en los requests que necesitan autorizacion
+    helpers.request_id()
+    helpers.user_agent()
+    helpers.is_admin()
+
     requestlog.start_timer()
 
 
@@ -114,6 +134,7 @@ def after_request(response):
     app.logger.debug(helpers.log_request_id() +
                      'Excecuting after request actions.')
     requestlog.log_request(response)
+    response.headers.add('X-Request-ID', g.request_id)
 
     return response
 
@@ -125,6 +146,30 @@ api.add_resource(home.Ping,
                  "/ping")
 api.add_resource(home.Status,
                  "/status")
+api.add_resource(authserver_relay.AllAdminUsers,
+                 api_path + "/adminusers")
+api.add_resource(authserver_relay.AdminUser,
+                 api_path + "/adminusers/<string:username>")
+api.add_resource(authserver_relay.AdminUserSessions,
+                 api_path + "/adminusers/<string:username>/sessions")
+api.add_resource(authserver_relay.AllUsers,
+                 api_path + "/users")
+api.add_resource(authserver_relay.User,
+                 api_path + "/users/<string:username>")
+api.add_resource(authserver_relay.UserAvatar,
+                 api_path + "/users/<string:username>/avatar")
+api.add_resource(authserver_relay.UserExists,
+                 api_path + "/users/<string:username>/exists")
+api.add_resource(authserver_relay.UserSessions,
+                 api_path + "/users/<string:username>/sessions")
+api.add_resource(authserver_relay.AllSessions,
+                 api_path + "/sessions")
+api.add_resource(authserver_relay.Session,
+                 api_path + "/sessions/<string:token>")
+api.add_resource(authserver_relay.AllRecovery,
+                 api_path + "/recovery")
+api.add_resource(authserver_relay.Recovery,
+                 api_path + "/recovery/<string:username>")
 api.add_resource(requestlog.RequestLog,
                  api_path + "/requestlog")
 

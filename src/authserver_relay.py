@@ -10,7 +10,6 @@
 # Flask, para la implementacion del servidor REST
 from flask_restful import Resource
 from flask import request
-from flask import g
 from http import HTTPStatus
 
 # Importacion del cliente de AuthServer y helpers
@@ -34,6 +33,8 @@ class AllAdminUsers(Resource):
 
     # verbo POST - nuevo usario administrador
     @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
     def post(self):
         try:
             response = authserver_client.\
@@ -52,6 +53,7 @@ class AllAdminUsers(Resource):
     # verbo GET - listar usuarios administradores
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self):
         try:
             response = authserver_client.\
@@ -79,6 +81,7 @@ class AdminUser(Resource):
     # verbo GET - leer usuario administrador
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self, username):
         try:
             response = authserver_client.\
@@ -97,6 +100,7 @@ class AdminUser(Resource):
     # verbo PUT - actualizar usuario completo, si no existe lo crea
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def put(self, username):
         try:
             response = authserver_client.\
@@ -117,6 +121,7 @@ class AdminUser(Resource):
     # { "op": "replace", "path": "/password", "value": "" }
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def patch(self, username):
         try:
             response = authserver_client.\
@@ -135,6 +140,7 @@ class AdminUser(Resource):
     # verbo DELETE - borrar usuario administrador
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def delete(self, username):
         try:
             response = authserver_client.\
@@ -158,6 +164,7 @@ class AdminUserSessions(Resource):
     # verbo GET - obtener sesiones vigentes del usuario admin
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self, username):
         try:
             response = authserver_client.\
@@ -203,6 +210,7 @@ class AllUsers(Resource):
     # verbo GET - listar usuarios
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self):
         try:
             response = authserver_client.\
@@ -248,6 +256,7 @@ class User(Resource):
     # verbo PUT - actualizar usuario completo, si no existe lo crea
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.limit_own_user_role
     def put(self, username):
         try:
             resp_auth = authserver_client.\
@@ -269,6 +278,7 @@ class User(Resource):
     # { "op": "replace", "path": "/avatar", "value": "" }
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.limit_own_user_role
     def patch(self, username):
         try:
             response = authserver_client.\
@@ -287,6 +297,7 @@ class User(Resource):
     # verbo DELETE - borrar usuario
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.limit_own_user_role
     def delete(self, username):
         try:
             resp_auth = authserver_client.\
@@ -369,6 +380,7 @@ class UserSessions(Resource):
     # verbo GET - obtener sesiones vigentes del usuario
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self, username):
         try:
             response = authserver_client.\
@@ -414,6 +426,7 @@ class AllSessions(Resource):
     # verbo GET - listar sesiones
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self):
         try:
             response = authserver_client.\
@@ -439,17 +452,12 @@ class Session(Resource):
     # verbo GET - checkear sesion
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.check_own_session
     def get(self, token):
         try:
-            if not (g.session_token == token or g.session_admin):
-                ResponseSessionResponseGet = {
-                    "code": -1,
-                    "message": "Not session owner or admin.",
-                    "data": None
-                }
-                return helpers.return_request(ResponseSessionResponseGet,
-                                              HTTPStatus.UNAUTHORIZED)
-            response = authserver_client.AuthAPIClient.get_session(token)
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       get_session(token)
             return response.json(), response.status_code
         except Exception as e:
             ResponseSessionResponseGet = {
@@ -463,17 +471,12 @@ class Session(Resource):
     # verbo DELETE - cerrar sesion
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.check_own_session
     def delete(self, token):
         try:
-            if not (g.session_token == token or g.session_admin):
-                ResponseSessionDelete = {
-                    "code": -1,
-                    "message": "Not session owner or admin.",
-                    "data": None
-                }
-                return helpers.return_request(ResponseSessionDelete,
-                                              HTTPStatus.UNAUTHORIZED)
-            response = authserver_client.AuthAPIClient.delete_session(token)
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       delete_session(token)
             return response.json(), response.status_code
         except Exception as e:
             ResponseSessionDelete = {
@@ -498,6 +501,7 @@ class AllRecovery(Resource):
     # verbo GET - recuperar todos los pedidos de recupero de contraseña
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self):
         try:
             response = authserver_client.\
@@ -542,6 +546,7 @@ class Recovery(Resource):
     # verbo GET - recuperar un pedido especifico de recupero de contraseña
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self, username):
         try:
             response = authserver_client.\

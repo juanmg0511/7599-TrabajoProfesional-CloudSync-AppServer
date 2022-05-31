@@ -115,12 +115,14 @@ def before_request():
     # Valores necesarios para procesar los requests
     g.request_id = None
     g.user_agent = None
+    g.session_role = None
     g.session_token = None
     g.session_admin = None
     # Inicializacion de valores
-    # El token de sesion se iniciza por medio de
-    # helpers.check_token, utilizado como decorator
-    # en los requests que necesitan autorizacion
+    # El token de sesion y el rol del usurio
+    # se inicizan por medio de helpers.check_token,
+    # utilizado como decorator en los requests que
+    # necesitan autorizacion
     helpers.request_id()
     helpers.user_agent()
     helpers.is_admin()

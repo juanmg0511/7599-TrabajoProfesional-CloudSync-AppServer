@@ -112,6 +112,7 @@ class RequestLog(Resource):
     # verbo GET - obtener registros del request log entre fechas
     @helpers.log_reqId
     @helpers.check_token
+    @helpers.deny_user_role
     def get(self):
         appServer.app.logger.info(helpers.log_request_id() +
                                   'Request log requested.')

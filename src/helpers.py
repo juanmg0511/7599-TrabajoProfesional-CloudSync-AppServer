@@ -40,6 +40,7 @@ def log_reqId(view_function):
 def check_token(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
+
         session_token = request.headers.get("X-Auth-Token")
         if (not session_token):
             CheckSessionResponse = {
@@ -49,11 +50,109 @@ def check_token(f):
             }
             return return_request(CheckSessionResponse,
                                   HTTPStatus.UNAUTHORIZED)
-        response = authserver_client.AuthAPIClient.get_session(session_token)
+
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       get_session(session_token)
+        except Exception as e:
+            CheckSessionResponse = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return return_request(CheckSessionResponse,
+                                  HTTPStatus.SERVICE_UNAVAILABLE)
+
         if (response.status_code != HTTPStatus.OK):
             return response.json(), response.status_code
+
         g.session_token = session_token
         g.session_username = response.json()["username"]
+        g.session_role = response.json()["user_role"]
+
+        return f(*args, **kwargs)
+
+    return wrapper
+
+
+# Decorator que denega el acceso al enpoint para los
+# usuarios con rol "user"
+def deny_user_role(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+
+        if (g.session_role == "user"):
+            appServer.app.logger.warning(log_request_id() +
+                                         "User \"" +
+                                         g.session_username +
+                                         "\" is trying to access a " +
+                                         "restricted endpoint! Please " +
+                                         "check the request log for details.")
+            DenyUserRoleResponse = {
+                "code": -1,
+                "message": "You do not have sufficient " +
+                           "priviliges to use this resource.",
+                "data": None
+            }
+            return return_request(DenyUserRoleResponse,
+                                  HTTPStatus.UNAUTHORIZED)
+        return f(*args, **kwargs)
+    return wrapper
+
+
+# Decorator que limita el acceso al enpoint para los
+# usuarios con rol "user". Solo pueden operar sobre
+# su propio usuario
+def limit_own_user_role(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+
+        if ((g.session_role == "user")
+           and
+           (g.session_username not in request.base_url)):
+            appServer.app.logger.warning(log_request_id() +
+                                         "User \"" +
+                                         g.session_username +
+                                         "\" is trying to access a " +
+                                         "restricted endpoint! Please " +
+                                         "check the request log for details.")
+            DenyUserRoleResponse = {
+                "code": -1,
+                "message": "You do not have sufficient " +
+                           "priviliges to use this resource.",
+                "data": None
+            }
+            return return_request(DenyUserRoleResponse,
+                                  HTTPStatus.UNAUTHORIZED)
+        return f(*args, **kwargs)
+    return wrapper
+
+
+# Decorator que limita el acceso al enpoint de sesiones
+# para los usuarios con rol "user". Solo pueden operar
+# sobre sus propias sesiones
+def check_own_session(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+
+        if ((g.session_role == "user")
+           and
+           (g.session_token not in request.base_url)):
+            appServer.app.logger.warning(log_request_id() +
+                                         "User \"" +
+                                         g.session_username +
+                                         "\" is trying to access a " +
+                                         "restricted endpoint! Please " +
+                                         "check the request log for details.")
+            DenyUserRoleResponse = {
+                "code": -1,
+                "message": "You do not have sufficient " +
+                           "priviliges to use this resource.",
+                "data": None
+            }
+            return return_request(DenyUserRoleResponse,
+                                  HTTPStatus.UNAUTHORIZED)
         return f(*args, **kwargs)
     return wrapper
 

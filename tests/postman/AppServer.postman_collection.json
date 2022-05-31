@@ -83,6 +83,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -111,6 +116,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -142,6 +152,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -168,7 +183,18 @@
 					"name": "New Admin User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"username\": \"admin1\",\n    \"password\": \"123456\",\n    \"first_name\": \"Admin\",\n    \"last_name\": \"Numero Uno\",\n    \"email\": \"test12345@gmail.com\"\n}\n",
@@ -204,6 +230,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -244,6 +275,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -282,6 +318,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -327,6 +368,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -355,6 +401,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -385,6 +436,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -417,6 +473,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -448,6 +509,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -478,6 +544,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -517,6 +588,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -554,6 +630,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -594,6 +675,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -633,6 +719,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -671,6 +762,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -716,6 +812,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -737,7 +838,7 @@
 					"response": []
 				},
 				{
-					"name": "New session (login - user & password)",
+					"name": "New session (admin login - user & password)",
 					"event": [
 						{
 							"listen": "test",
@@ -745,6 +846,59 @@
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"pm.collectionVariables.set(\"X-Auth-Token\", jsonData.session_token);",
+									"pm.collectionVariables.set(\"X-Auth-Username\", jsonData.username);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Admin",
+								"value": "true",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin2\",\n    \"password\": \"123456\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/sessions",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New session (user login - user & password)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"X-Auth-Token\", jsonData.session_token);",
+									"pm.collectionVariables.set(\"X-Auth-Username\", jsonData.username);",
 									""
 								],
 								"type": "text/javascript"
@@ -782,7 +936,7 @@
 					"response": []
 				},
 				{
-					"name": "New session (login - login service)",
+					"name": "New session (user login - login service)",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -822,6 +976,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -851,6 +1010,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -886,6 +1050,11 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -961,6 +1130,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -1029,6 +1203,11 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -1093,8 +1272,13 @@
 			"type": "string"
 		},
 		{
+			"key": "X-Auth-Username",
+			"value": "juan0511",
+			"type": "string"
+		},
+		{
 			"key": "Pwd-Recovery-Key",
-			"value": "48a166d0-e07e-11ec-9838-0242ac120002",
+			"value": "c6966ce8-e07e-11ec-abc6-0242ac120003",
 			"type": "string"
 		}
 	]

@@ -1243,6 +1243,329 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Game Progress",
+			"item": [
+				{
+					"name": "List all Game Progress Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/gameprogress",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Game Progress for User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create/Update Game Progress for User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"next_level\": 5,\n    \"difficulty_level\": 5\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Game Progress for User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "High Scores",
+			"item": [
+				{
+					"name": "List all High Scores Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/highscores",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get High Scores for User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/highscores/juan0511",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New High Score for User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 2,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/highscores",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete High Scores for User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/highscores/juan0511",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

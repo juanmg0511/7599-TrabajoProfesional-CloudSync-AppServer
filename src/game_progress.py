@@ -30,7 +30,10 @@ class AllProgress(Resource):
         appServer.app.logger.info(helpers.log_request_id() +
                                   'All game progress records requested.')
 
-        allProgress = appServer.db.gameprogress.find()
+        try:
+            allProgress = appServer.db.gameprogress.find()
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         AllProgressResponseGet = []
         for existingUser in allProgress:
@@ -65,8 +68,12 @@ class Progress(Resource):
                                   username +
                                   "' requested.")
 
-        existingGameProgress = appServer.db.gameprogress.find_one(
-            {"username": username})
+        try:
+            existingGameProgress = appServer.db.gameprogress.find_one(
+                {"username": username})
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
+
         if (existingGameProgress is not None):
             progressResponseGet = {
                 "id": str(existingGameProgress["_id"]),
@@ -116,8 +123,11 @@ class Progress(Resource):
             return helpers.return_request(progressResponsePut,
                                           HTTPStatus.BAD_REQUEST)
 
-        existingGameProgress = appServer.db.gameprogress.find_one(
-            {"username": username})
+        try:
+            existingGameProgress = appServer.db.gameprogress.find_one(
+                {"username": username})
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
         if (existingGameProgress is not None):
 
             progressToUpdate = {
@@ -128,8 +138,11 @@ class Progress(Resource):
             }
 
             progressResponsePut = progressToUpdate.copy()
-            appServer.db.gameprogress.update_one(
-                {"username": username}, {'$set': progressToUpdate})
+            try:
+                appServer.db.gameprogress.update_one(
+                    {"username": username}, {'$set': progressToUpdate})
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
             id_userToUpdate = str(existingGameProgress["_id"])
             progressResponsePut["username"] = existingGameProgress["username"]
             progressResponsePut["id"] = id_userToUpdate
@@ -144,7 +157,10 @@ class Progress(Resource):
                 "date_updated": None
                 }
             progressResponsePut = progressToInsert.copy()
-            appServer.db.gameprogress.insert_one(progressToInsert)
+            try:
+                appServer.db.gameprogress.insert_one(progressToInsert)
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
             id_progressToInsert = str(progressToInsert["_id"])
             progressResponsePut["id"] = id_progressToInsert
 
@@ -161,11 +177,17 @@ class Progress(Resource):
                                   username +
                                   "' deletion requested.")
 
-        existingGameProgress = appServer.db.gameprogress.find_one(
-            {"username": username})
+        try:
+            existingGameProgress = appServer.db.gameprogress.find_one(
+                {"username": username})
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
         if (existingGameProgress is not None):
 
-            appServer.db.gameprogress.delete_many({"username": username})
+            try:
+                appServer.db.gameprogress.delete_many({"username": username})
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
 
             progressResponseDelete = {
                 "code": 0,

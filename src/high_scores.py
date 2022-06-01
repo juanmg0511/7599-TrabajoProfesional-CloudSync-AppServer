@@ -26,12 +26,14 @@ class AllHighScores(Resource):
     # verbo GET - listar high scores de todos los usuarios
     @helpers.log_reqId
     @helpers.check_token
-    @helpers.deny_user_role
     def get(self):
         appServer.app.logger.info(helpers.log_request_id() +
                                   'All high scores requested.')
 
-        allHighScores = appServer.db.highscores.find()
+        try:
+            allHighScores = appServer.db.highscores.find()
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         AllHighScoresResponseGet = []
         for existingHighScore in allHighScores:
@@ -95,7 +97,10 @@ class AllHighScores(Resource):
             "date_updated": None
         }
         AllHighScoresResponsePost = highScoreToInsert.copy()
-        appServer.db.highscores.insert_one(highScoreToInsert)
+        try:
+            appServer.db.highscores.insert_one(highScoreToInsert)
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
         id_highScoreToInsert = str(highScoreToInsert["_id"])
         AllHighScoresResponsePost["id"] = id_highScoreToInsert
         AllHighScoresResponsePost.pop("password", None)
@@ -120,8 +125,11 @@ class HighScores(Resource):
                                   username +
                                   "' requested.")
 
-        existingHighScores = appServer.db.highscores.find(
-            {"username": username})
+        try:
+            existingHighScores = appServer.db.highscores.find(
+                {"username": username})
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         AllHighScoresResponseGet = []
         for existingHighScore in existingHighScores:
@@ -162,11 +170,17 @@ class HighScores(Resource):
                                   username +
                                   "' deletion requested.")
 
-        existingHighScores = appServer.db.highscores.find_one(
-            {"username": username})
+        try:
+            existingHighScores = appServer.db.highscores.find_one(
+                {"username": username})
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
         if (existingHighScores is not None):
 
-            appServer.db.highscores.delete_many({"username": username})
+            try:
+                appServer.db.highscores.delete_many({"username": username})
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
 
             HighScoresResponseDelete = {
                 "code": 0,

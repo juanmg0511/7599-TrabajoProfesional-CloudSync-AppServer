@@ -174,6 +174,25 @@ def check_own_session(f):
     return wrapper
 
 
+# Funcion que devuelve el mensaje de error y se encarga de finalizar el
+# request en caso que se produzca algun problema durante la ejecucion de
+# una operacion con la base de datos
+def handleDatabasebError(e):
+
+    appServer.app.logger.error(log_request_id() + "Error excecuting a " +
+                               "database operation. Please try again later.")
+
+    DatabaseErrorResponse = {
+        "code": -1,
+        "message": "Error excecuting a database operation. " +
+                   "Please try again later.",
+        "data": str(e)
+    }
+
+    return return_request(DatabaseErrorResponse,
+                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+
 # Funcion que devuelve y guarda el requestID actual, o genera uno nuevo en
 # caso de encontrarse vacio
 def request_id():
@@ -203,10 +222,18 @@ def is_admin():
 def config_log():
 
     if (appServer.app_env != "PROD"):
-        appServer.app.logger.info("*****************************************")
-        appServer.app.logger.info("This server is: " + appServer.app_env)
-        appServer.app.logger.info("*****************************************")
+        appServer.app.logger.warning("**************************************")
+        appServer.app.logger.warning("* This server is: " + appServer.app_env)
+        appServer.app.logger.warning("**************************************")
 
+    appServer.app.logger.info("Database server: " +
+                              appServer.mongodb_hostname +
+                              ":" +
+                              appServer.mongodb_port)
+    appServer.app.logger.debug("Database name: " +
+                               appServer.mongodb_database)
+    appServer.app.logger.debug("Database username: " +
+                               appServer.mongodb_username)
     appServer.app.logger.debug("API key for AuthServer is: \"" +
                                str(appServer.api_auth_client_id) +
                                "\".")

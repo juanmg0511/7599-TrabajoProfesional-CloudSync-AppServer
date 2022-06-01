@@ -50,7 +50,7 @@ class Status(Resource):
         dbStatus = "offline"
         try:
             # Informacion sobre la instancia de DB, para DEBUG
-            # dbInfo = appServer.cl.server_info()
+            appServer.db.requestlog.find_one()
             dbStatus = "online"
         except Exception:
             dbStatus = "offline"

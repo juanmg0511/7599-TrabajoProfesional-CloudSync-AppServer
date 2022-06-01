@@ -38,6 +38,11 @@ api_auth_client_id_default = "44dd22ca-836d-40b6-aa49-7981ded03667"
 api_auth_client_url_default = "http://127.0.0.1:81"
 api_auth_client_path_default = "api"
 api_auth_client_version_default = "v1"
+mongodb_hostname_default = "127.0.0.1"
+mongodb_port_default = "27017"
+mongodb_database_default = "app-server-db"
+mongodb_username_default = "appserveruser"
+mongodb_password_default = "*"
 
 # Agregamos un root para todos los enpoints, con la api version
 api_path = "/api/v" + api_version
@@ -48,27 +53,6 @@ api = Api(app)
 
 # Inicializacion del parser de request ID
 RequestID(app)
-
-# Inicializacion de la base de datos, MongoDB
-app.config["MONGO_URI"] = "mongodb://" + \
-                          os.environ.get("MONGODB_USERNAME",
-                                         "appserveruser") + \
-                          ":" + \
-                          os.environ.get("MONGODB_PASSWORD",
-                                         "*") + \
-                          "@" + \
-                          os.environ.get("MONGODB_HOSTNAME",
-                                         "127.0.0.1") + \
-                          ":" + \
-                          os.environ.get("MONGODB_PORT",
-                                         "27017") + \
-                          "/" + \
-                          os.environ.get("MONGODB_DATABASE",
-                                         "app-server-db") + \
-                          "?retryWrites=false"
-mongo = PyMongo(app)
-db = mongo.db
-cl = mongo.cx
 
 # Habilitacion de CORS
 CORS(app)
@@ -86,6 +70,33 @@ api_auth_client_path = os.environ.get("API_AUTH_CLIENT_PATH",
                                       api_auth_client_path_default)
 api_auth_client_version = os.environ.get("API_AUTH_CLIENT_VERSION",
                                          api_auth_client_version_default)
+# Lectura de la configuracion del servidor de base de datos
+mongodb_hostname = os.environ.get("MONGODB_HOSTNAME",
+                                  mongodb_hostname_default)
+mongodb_port = os.environ.get("MONGODB_PORT",
+                              mongodb_port_default)
+mongodb_database = os.environ.get("MONGODB_DATABASE",
+                                  mongodb_database_default)
+mongodb_username = os.environ.get("MONGODB_USERNAME",
+                                  mongodb_username_default)
+mongodb_password = os.environ.get("MONGODB_PASSWORD",
+                                  mongodb_password_default)
+
+# Inicializacion de la base de datos, MongoDB
+app.config["MONGO_URI"] = "mongodb://" + \
+                          mongodb_username + \
+                          ":" + \
+                          mongodb_password + \
+                          "@" + \
+                          mongodb_hostname + \
+                          ":" + \
+                          mongodb_port + \
+                          "/" + \
+                          mongodb_database + \
+                          "?retryWrites=false"
+mongo = PyMongo(app)
+db = mongo.db
+cl = mongo.cx
 
 
 # Inicializacion - para cuando ejecuta gunicorn + flask

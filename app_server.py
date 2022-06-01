@@ -20,7 +20,8 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 
 # Importacion de clases necesarias
-from src import home, authserver_relay, game_progress, requestlog, helpers
+from src import home, authserver_relay, game_progress, high_scores,\
+                requestlog, helpers
 
 # Version de API y Server
 api_version = "1"
@@ -178,6 +179,10 @@ api.add_resource(game_progress.AllProgress,
                  api_path + "/gameprogress")
 api.add_resource(game_progress.Progress,
                  api_path + "/gameprogress/<string:username>")
+api.add_resource(high_scores.AllHighScores,
+                 api_path + "/highscores")
+api.add_resource(high_scores.HighScores,
+                 api_path + "/highscores/<string:username>")
 
 # Inicio del server en forma directa con WSGI
 # Toma el puerto y modo de las variables de entorno

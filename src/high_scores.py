@@ -11,6 +11,7 @@
 from datetime import datetime
 # Flask, para la implementacion del servidor REST
 from flask_restful import Resource, reqparse
+from flask import request
 from http import HTTPStatus
 
 # Importacion del archivo principal y helpers
@@ -31,11 +32,83 @@ class AllHighScores(Resource):
                                   'All high scores requested.')
 
         try:
-            allHighScores = appServer.db.highscores.find()
+            parser = reqparse.RequestParser()
+            # Primer registro de la collection a mostrar
+            # El indice arranca en 0!
+            parser.add_argument("start",
+                                type=int,
+                                required=False,
+                                nullable=False)
+            # Cantidad de registros de la collection a
+            # mostrar por pagina
+            # Si es igual a 0 es como si no estuviera
+            parser.add_argument("limit",
+                                type=int,
+                                required=False,
+                                nullable=False)
+            args = parser.parse_args()
+        except Exception:
+            AllHighScoresResponseGet = {
+                "code": -1,
+                "message": "Bad request. Missing required arguments.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponseGet,
+                                          HTTPStatus.BAD_REQUEST)
+
+        # Parseo de los parametros para el pagindo
+        query_start = str(args.get("start", 0))
+        if (query_start != "None"):
+            query_start = int(query_start)
+            if (query_start < 0):
+                query_start = 0
+        else:
+            query_start = 0
+        query_limit = str(args.get("limit", 0))
+        if (query_limit != "None"):
+            query_limit = int(query_limit)
+            if (query_limit < 0):
+                query_limit = 0
+        else:
+            query_limit = 0
+
+        try:
+            allHighScores = appServer.db.highscores.\
+                            find().\
+                            skip(query_start).\
+                            limit(query_limit)
+            allHighScoresCount = appServer.db.highscores.\
+                count_documents({})
         except Exception as e:
             return helpers.handleDatabasebError(e)
 
-        AllHighScoresResponseGet = []
+        # Calculo de las URL hacia anterior y siguiente
+        start_previous = query_start - query_limit
+        start_next = query_start + query_limit
+        if (start_previous < 0
+           or (start_previous >= allHighScoresCount)
+           or (query_start == 0 and query_limit == 0)
+           or (query_limit == 0)):
+            url_previous = None
+        else:
+            url_previous = request.path +\
+                           "?start=" +\
+                           str(start_previous) +\
+                           "&limit=" +\
+                           str(query_limit)
+
+        if (start_next >= allHighScoresCount
+           or (query_start == 0 and query_limit == 0)
+           or (query_limit == 0)):
+            url_next = None
+        else:
+            url_next = request.path +\
+                       "?start=" +\
+                       str(start_next) +\
+                       "&limit=" +\
+                       str(query_limit)
+
+        AllHighScoresResultsGet = []
         for existingHighScore in allHighScores:
             retrievedHighScore = {
                 "id": str(existingHighScore["_id"]),
@@ -48,7 +121,16 @@ class AllHighScores(Resource):
                 "date_created": existingHighScore["date_created"],
                 "date_updated": existingHighScore["date_updated"]
             }
-            AllHighScoresResponseGet.append(retrievedHighScore)
+            AllHighScoresResultsGet.append(retrievedHighScore)
+
+        # Construimos la respuesta paginada
+        AllHighScoresResponseGet = {
+            "total": allHighScoresCount,
+            "limit": query_limit,
+            "next": url_next,
+            "previous": url_previous,
+            "results": AllHighScoresResultsGet
+        }
 
         return helpers.return_request(AllHighScoresResponseGet, HTTPStatus.OK)
 

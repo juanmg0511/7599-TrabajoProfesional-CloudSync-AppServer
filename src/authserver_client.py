@@ -65,11 +65,12 @@ class AuthAPIClient:
     # Metodos para endpoint 'sessions' del AuthServer
     ###########################################################################
     @staticmethod
-    def get_sessions():
+    def get_sessions(filters):
         return requests.get(appServer.api_auth_client_url + "/" +
                             appServer.api_auth_client_path + "/" +
                             appServer.api_auth_client_version + "/" +
                             "sessions",
+                            params=filters,
                             headers=AuthAPIClient.__headers())
 
     @staticmethod
@@ -159,13 +160,14 @@ class AuthAPIClient:
                              headers=AuthAPIClient.__headers())
 
     @staticmethod
-    def get_user_sessions(username):
+    def get_user_sessions(username, filters):
         return requests.get(appServer.api_auth_client_url + "/" +
                             appServer.api_auth_client_path + "/" +
                             appServer.api_auth_client_version + "/" +
                             "users" + "/" +
                             username + "/" +
                             "sessions",
+                            params=filters,
                             headers=AuthAPIClient.__headers())
 
     ###########################################################################
@@ -228,13 +230,14 @@ class AuthAPIClient:
                              headers=AuthAPIClient.__headers())
 
     @staticmethod
-    def get_adminuser_sessions(username):
+    def get_adminuser_sessions(username, filters):
         return requests.get(appServer.api_auth_client_url + "/" +
                             appServer.api_auth_client_path + "/" +
                             appServer.api_auth_client_version + "/" +
                             "adminusers" + "/" +
                             username + "/" +
                             "sessions",
+                            params=filters,
                             headers=AuthAPIClient.__headers())
 
     ###########################################################################
@@ -269,9 +272,10 @@ class AuthAPIClient:
                              headers=AuthAPIClient.__headers())
 
     @staticmethod
-    def get_recoveries():
+    def get_recoveries(filters):
         return requests.get(appServer.api_auth_client_url + "/" +
                             appServer.api_auth_client_path + "/" +
                             appServer.api_auth_client_version + "/" +
                             "recovery",
+                            params=filters,
                             headers=AuthAPIClient.__headers())

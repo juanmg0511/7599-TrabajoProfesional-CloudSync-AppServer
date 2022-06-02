@@ -58,7 +58,7 @@ class AllAdminUsers(Resource):
         try:
             response = authserver_client.\
                     AuthAPIClient.\
-                    get_adminusers(request.data)
+                    get_adminusers(request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseAllAdminusersGet = {
@@ -169,7 +169,7 @@ class AdminUserSessions(Resource):
         try:
             response = authserver_client.\
                        AuthAPIClient.\
-                       get_adminuser_sessions(username)
+                       get_adminuser_sessions(username, request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseAdminusersGet = {
@@ -214,8 +214,8 @@ class AllUsers(Resource):
     def get(self):
         try:
             response = authserver_client.\
-                    AuthAPIClient.\
-                    get_users(request.data)
+                       AuthAPIClient.\
+                       get_users(request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseAllUsersGet = {
@@ -385,7 +385,7 @@ class UserSessions(Resource):
         try:
             response = authserver_client.\
                        AuthAPIClient.\
-                       get_user_sessions(username)
+                       get_user_sessions(username, request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseUserSessionsGet = {
@@ -431,7 +431,7 @@ class AllSessions(Resource):
         try:
             response = authserver_client.\
                        AuthAPIClient.\
-                       get_sessions()
+                       get_sessions(request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseSessionGet = {
@@ -506,7 +506,7 @@ class AllRecovery(Resource):
         try:
             response = authserver_client.\
                        AuthAPIClient.\
-                       get_recoveries()
+                       get_recoveries(request.args)
             return response.json(), response.status_code
         except Exception as e:
             ResponseAllRecoveryGet = {

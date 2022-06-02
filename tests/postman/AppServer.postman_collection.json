@@ -91,7 +91,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/adminusers",
+							"raw": "http://127.0.0.1/api/v1/adminusers?start=0&limit=0&show_closed=true",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -103,6 +103,20 @@
 								"api",
 								"v1",
 								"adminusers"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "show_closed",
+									"value": "true"
+								}
 							]
 						}
 					},
@@ -160,7 +174,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/adminusers/cloudsyncgod/sessions",
+							"raw": "http://127.0.0.1/api/v1/adminusers/admin2/sessions?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -172,8 +186,18 @@
 								"api",
 								"v1",
 								"adminusers",
-								"cloudsyncgod",
+								"admin2",
 								"sessions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -376,7 +400,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/users",
+							"raw": "http://127.0.0.1/api/v1/users?start=0&limit=0&show_closed=true",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -388,6 +412,20 @@
 								"api",
 								"v1",
 								"users"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "show_closed",
+									"value": "true"
+								}
 							]
 						}
 					},
@@ -517,7 +555,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/users/juan0511/sessions",
+							"raw": "http://127.0.0.1/api/v1/users/juan0511/sessions?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -531,6 +569,16 @@
 								"users",
 								"juan0511",
 								"sessions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -820,7 +868,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/sessions",
+							"raw": "http://127.0.0.1/api/v1/sessions?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -832,6 +880,16 @@
 								"api",
 								"v1",
 								"sessions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -1059,7 +1117,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/recovery",
+							"raw": "http://127.0.0.1/api/v1/recovery?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1071,6 +1129,16 @@
 								"api",
 								"v1",
 								"recovery"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -1264,7 +1332,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/gameprogress",
+							"raw": "http://127.0.0.1/api/v1/gameprogress?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1276,6 +1344,16 @@
 								"api",
 								"v1",
 								"gameprogress"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -1426,7 +1504,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/highscores",
+							"raw": "http://127.0.0.1/api/v1/highscores?start=0&limit=0",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1438,6 +1516,16 @@
 								"api",
 								"v1",
 								"highscores"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								}
 							]
 						}
 					},

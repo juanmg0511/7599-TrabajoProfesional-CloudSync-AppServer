@@ -1,7 +1,13 @@
+# CloudSync - App Server
+# Flask + MongoDB - on Gunicorn
+# .travis.yml
+
+# Basado en: https://medium.com/@javierfernandes/continuous-deployment-con-docker-travis-heroku-c24042fb830b
+
 sudo: required
 language: python
 python:
-  - 3.7
+  - 3.6
 services:
   - docker
 before_install:
@@ -10,9 +16,10 @@ before_install:
   # login to docker registries (dockerhub + heroku)
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+
 install:
   # install requirements
-  - pip install coverage coveralls PyYAML
+  - pip install -U coverage coveralls PyYAML
   # create copy of source code to mirror docker-compose structure
   - sudo mkdir /home/ubuntu/
   - sudo find . -name "*.py" -exec rsync -qR {} /home/ubuntu \;
@@ -26,23 +33,29 @@ script:
 after_success:
   # submit results to coveralls, on success
   - coveralls
+branches:
+  # include ONLY these branches
+  only:
+    - qa
+    - master
 deploy:
   - provider: script
     script:
       # build docker images, push to dockerhub & heroku
-      docker build -t juanmg0511/fiuba-taller-2-auth-server:staging .;
-      docker tag juanmg0511/fiuba-taller-2-auth-server:staging registry.heroku.com/$HEROKU_APP_NAME_STAGING/web;
-      docker push juanmg0511/fiuba-taller-2-auth-server:staging;
-      docker push registry.heroku.com/$HEROKU_APP_NAME_STAGING/web;
-      heroku container:release web --app $HEROKU_APP_NAME_STAGING
+      docker build -t juanmg0511/7599-trabajoprofesional-cloudsync-appserver:qa .;
+      docker tag juanmg0511/7599-trabajoprofesional-cloudsync-appserver:qa registry.heroku.com/$HEROKU_APP_NAME_QA/web;
+      docker push juanmg0511/7599-trabajoprofesional-cloudsync-appserver:qa;
+      docker push registry.heroku.com/$HEROKU_APP_NAME_QA/web;
+      heroku container:release web --app $HEROKU_APP_NAME_QA
     on:
       branch: qa
+
   - provider: script
     script:
       # build docker images, push to dockerhub & heroku
-      docker build -t juanmg0511/fiuba-taller-2-auth-server:production .;
-      docker tag juanmg0511/fiuba-taller-2-auth-server:production registry.heroku.com/$HEROKU_APP_NAME/web;
-      docker push juanmg0511/fiuba-taller-2-auth-server:production;
+      docker build -t juanmg0511/7599-trabajoprofesional-cloudsync-appserver:production .;
+      docker tag juanmg0511/7599-trabajoprofesional-cloudsync-appserver:production registry.heroku.com/$HEROKU_APP_NAME/web;
+      docker push juanmg0511/7599-trabajoprofesional-cloudsync-appserver:production;
       docker push registry.heroku.com/$HEROKU_APP_NAME/web;
       heroku container:release web --app $HEROKU_APP_NAME
     on:

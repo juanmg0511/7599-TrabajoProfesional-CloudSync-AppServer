@@ -68,6 +68,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1/stats?startdate=2022-05-30&enddate=2022-06-03&sort_ascending=false",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"stats"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-05-30"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-06-03"
+								},
+								{
+									"key": "sort_ascending",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

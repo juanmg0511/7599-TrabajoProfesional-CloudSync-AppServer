@@ -1,0 +1,49 @@
+sudo: required
+language: python
+python:
+  - 3.7
+services:
+  - docker
+before_install:
+  # install heroku CLI
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+  # login to docker registries (dockerhub + heroku)
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+install:
+  # install requirements
+  - pip install coverage coveralls PyYAML
+  # create copy of source code to mirror docker-compose structure
+  - sudo mkdir /home/ubuntu/
+  - sudo find . -name "*.py" -exec rsync -qR {} /home/ubuntu \;
+  # build dockerized environment to run tests
+  - docker-compose build 
+  - docker-compose up -d
+script: 
+  # unit tests w/coverage, in docker-compose env
+  - docker exec -u root -it auth-server-flask bash -c "coverage run --omit */virtualenv/* -m unittest tests/*.py -v"
+  - coverage report
+after_success:
+  # submit results to coveralls, on success
+  - coveralls
+deploy:
+  - provider: script
+    script:
+      # build docker images, push to dockerhub & heroku
+      docker build -t juanmg0511/fiuba-taller-2-auth-server:staging .;
+      docker tag juanmg0511/fiuba-taller-2-auth-server:staging registry.heroku.com/$HEROKU_APP_NAME_STAGING/web;
+      docker push juanmg0511/fiuba-taller-2-auth-server:staging;
+      docker push registry.heroku.com/$HEROKU_APP_NAME_STAGING/web;
+      heroku container:release web --app $HEROKU_APP_NAME_STAGING
+    on:
+      branch: qa
+  - provider: script
+    script:
+      # build docker images, push to dockerhub & heroku
+      docker build -t juanmg0511/fiuba-taller-2-auth-server:production .;
+      docker tag juanmg0511/fiuba-taller-2-auth-server:production registry.heroku.com/$HEROKU_APP_NAME/web;
+      docker push juanmg0511/fiuba-taller-2-auth-server:production;
+      docker push registry.heroku.com/$HEROKU_APP_NAME/web;
+      heroku container:release web --app $HEROKU_APP_NAME
+    on:
+      branch: master

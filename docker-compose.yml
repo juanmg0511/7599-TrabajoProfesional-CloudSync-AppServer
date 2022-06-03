@@ -22,7 +22,7 @@ services:
       APP_ENV: "DEV"      
       # Datos para conectarse al AuthServer
       API_AUTH_CLIENT_ID: "ef00a570-7cfc-4638-8cad-d085fd98b6e3"
-      API_AUTH_CLIENT_URL: "http://127.0.0.1:81"
+      API_AUTH_CLIENT_URL: "http://192.168.10.12:81"
       API_AUTH_CLIENT_PATH: "api"
       API_AUTH_CLIENT_VERSION: "v1"
       # Datos para conectare a la DB

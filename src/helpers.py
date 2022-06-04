@@ -228,13 +228,18 @@ def config_log():
         appServer.app.logger.warning("**************************************")
 
     appServer.app.logger.info("Database server: " +
-                              appServer.mongodb_hostname +
-                              ":" +
-                              appServer.mongodb_port)
+                              appServer.mongodb_hostname)
     appServer.app.logger.debug("Database name: " +
                                appServer.mongodb_database)
     appServer.app.logger.debug("Database username: " +
                                appServer.mongodb_username)
+    appServer.app.logger.debug("Database using SSL: " +
+                               appServer.mongodb_ssl)
+    appServer.app.logger.info("Database replica set: " +
+                              appServer.mongodb_replica_set)
+    appServer.app.logger.debug("Database auth source: " +
+                               appServer.mongodb_auth_source)
+
     appServer.app.logger.debug("API key for AuthServer is: \"" +
                                str(appServer.api_auth_client_id) +
                                "\".")

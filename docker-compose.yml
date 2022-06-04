@@ -30,7 +30,9 @@ services:
       MONGODB_USERNAME: appserveruser
       MONGODB_PASSWORD: 123456
       MONGODB_HOSTNAME: app-server-mongodb
-      MONGODB_PORT: 27017
+      MONGODB_SSL: "false"
+      MONGODB_REPLICA_SET: "None"
+      MONGODB_AUTH_SOURCE: "None"
     volumes:
        - authserverlogs:/home/ubuntu/logs
        - ".:/home/ubuntu/" 

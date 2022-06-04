@@ -39,10 +39,12 @@ api_auth_client_url_default = "http://127.0.0.1:81"
 api_auth_client_path_default = "api"
 api_auth_client_version_default = "v1"
 mongodb_hostname_default = "127.0.0.1"
-mongodb_port_default = "27017"
 mongodb_database_default = "app-server-db"
 mongodb_username_default = "appserveruser"
 mongodb_password_default = "*"
+mongodb_ssl_default = "false"
+mongodb_replica_set_default = "None"
+mongodb_auth_source_default = "None"
 
 # Agregamos un root para todos los enpoints, con la api version
 api_path = "/api/v" + api_version
@@ -73,14 +75,19 @@ api_auth_client_version = os.environ.get("API_AUTH_CLIENT_VERSION",
 # Lectura de la configuracion del servidor de base de datos
 mongodb_hostname = os.environ.get("MONGODB_HOSTNAME",
                                   mongodb_hostname_default)
-mongodb_port = os.environ.get("MONGODB_PORT",
-                              mongodb_port_default)
 mongodb_database = os.environ.get("MONGODB_DATABASE",
                                   mongodb_database_default)
 mongodb_username = os.environ.get("MONGODB_USERNAME",
                                   mongodb_username_default)
 mongodb_password = os.environ.get("MONGODB_PASSWORD",
                                   mongodb_password_default)
+mongodb_ssl = os.environ.get("MONGODB_SSL",
+                             mongodb_ssl_default)
+mongodb_replica_set = os.environ.get("MONGODB_REPLICA_SET",
+                                     mongodb_replica_set_default)
+mongodb_auth_source = os.environ.get("MONGODB_AUTH_SOURCE",
+                                     mongodb_auth_source_default)
+
 
 # Inicializacion de la base de datos, MongoDB
 app.config["MONGO_URI"] = "mongodb://" + \
@@ -89,11 +96,17 @@ app.config["MONGO_URI"] = "mongodb://" + \
                           mongodb_password + \
                           "@" + \
                           mongodb_hostname + \
-                          ":" + \
-                          mongodb_port + \
                           "/" + \
                           mongodb_database + \
-                          "?retryWrites=false"
+                          "?ssl=" + \
+                          mongodb_ssl +\
+                          ("" if (mongodb_replica_set == "None") else
+                              ("&replicaSet=" + mongodb_replica_set)) + \
+                          ("" if (mongodb_auth_source) == "None" else
+                              ("&authSource=" + mongodb_auth_source)) + \
+                          "&retryWrites=true" + \
+                          "&w=majority"
+
 mongo = PyMongo(app)
 db = mongo.db
 cl = mongo.cx

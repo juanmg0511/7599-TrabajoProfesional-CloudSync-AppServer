@@ -43,11 +43,10 @@ def check_token(f):
     def wrapper(*args, **kwargs):
 
         session_token = request.headers.get("X-Auth-Token")
-        session_username = request.headers.get("X-Auth-Username")
-        if (not session_token or not session_username):
+        if (not session_token):
             CheckSessionResponse = {
                 "code": -1,
-                "message": "Authorization token and user required.",
+                "message": "Authorization token required.",
                 "data": None
             }
             return return_request(CheckSessionResponse,
@@ -68,22 +67,6 @@ def check_token(f):
 
         if (response.status_code != HTTPStatus.OK):
             return response.json(), response.status_code
-
-        if (session_username != response.json()["username"]):
-            appServer.app.logger.warning(log_request_id() +
-                                         "Someone is trying to access " +
-                                         "the API using a forged token! " +
-                                         "Please check the request log for " +
-                                         "details.")
-            CheckSessionResponse = {
-                "code": -1,
-                "message": "No session with token '" +
-                           str(session_token) +
-                           "' was found.",
-                "data": None
-            }
-            return return_request(CheckSessionResponse,
-                                  HTTPStatus.UNAUTHORIZED)
 
         g.session_token = session_token
         g.session_username = response.json()["username"]

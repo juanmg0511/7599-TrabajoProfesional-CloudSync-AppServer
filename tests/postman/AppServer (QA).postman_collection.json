@@ -117,11 +117,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -164,11 +159,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -197,11 +187,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -243,11 +228,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -284,11 +264,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -328,11 +303,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -370,11 +340,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -419,11 +384,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -465,11 +425,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -535,11 +490,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -569,11 +519,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -615,11 +560,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -657,11 +597,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -698,11 +633,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -742,11 +672,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -785,11 +710,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -827,11 +747,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -875,11 +790,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1046,11 +956,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1079,11 +984,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1118,11 +1018,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1206,11 +1101,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1277,11 +1167,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1329,11 +1214,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1372,11 +1252,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1405,11 +1280,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1448,11 +1318,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1497,11 +1362,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1540,11 +1400,6 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
@@ -1573,11 +1428,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
@@ -1615,11 +1465,6 @@
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],

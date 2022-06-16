@@ -140,6 +140,7 @@ def before_request():
     # Valores necesarios para procesar los requests
     g.request_id = None
     g.user_agent = None
+    g.session_username = None
     g.session_role = None
     g.session_token = None
     g.session_admin = None

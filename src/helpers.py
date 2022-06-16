@@ -37,7 +37,7 @@ def log_reqId(view_function):
     return check_and_log_req_id
 
 
-# Decorator que chequea si el toquen del request es valido
+# Decorator que chequea si el token del request es valido
 def check_token(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -71,6 +71,17 @@ def check_token(f):
         g.session_token = session_token
         g.session_username = response.json()["username"]
         g.session_role = response.json()["user_role"]
+
+        appServer.app.logger.debug(log_request_id() +
+                                   "Valid session token provided: \"" +
+                                   g.session_token +
+                                   "\".")
+        appServer.app.logger.info(log_request_id() +
+                                  "Valid user \"" +
+                                  g.session_username +
+                                  "\" session with " +
+                                  g.session_role +
+                                  " privileges.")
 
         return f(*args, **kwargs)
 

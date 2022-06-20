@@ -1348,6 +1348,59 @@
 			]
 		},
 		{
+			"name": "Request Log AuthServer",
+			"item": [
+				{
+					"name": "View Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/requestlogauthserver?startdate=2022-06-20&enddate=2022-06-20&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"44e566ef-d762-488a-b6ab-d22663b4a4a9\"}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"requestlogauthserver"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "filter",
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"44e566ef-d762-488a-b6ab-d22663b4a4a9\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Game Progress",
 			"item": [
 				{

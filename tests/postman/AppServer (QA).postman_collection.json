@@ -555,16 +555,10 @@
 					"name": "New User (user & password)",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"juan0512\",\n    \"password\": \"123456\",\n    \"first_name\": \"Juan Manuel\",\n    \"last_name\": \"Gonzalez\",\n    \"contact\": {\n        \"email\": \"juan0511@yahoo.com\",\n        \"phone\": \"5555 5555\"\n    },\n    \"avatar\": {\n        \"isUrl\": true,\n        \"data\": \"http://www.google.com\"\n    },\n    \"login_service\": false \n}\n",
+							"raw": "{\n    \"username\": \"juan0514\",\n    \"password\": \"123456\",\n    \"first_name\": \"Damián\",\n    \"last_name\": \"Marquesín Fernandez\",\n    \"contact\": {\n        \"email\": \"juanmg0511@gmail.com\",\n        \"phone\": \"5555 5555\"\n    },\n    \"avatar\": {\n        \"isUrl\": true,\n        \"data\": \"http://www.google.com\"\n    },\n    \"login_service\": false \n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -601,7 +595,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"dmf\",\n    \"first_name\": \"Damián\",\n    \"last_name\": \"Marquesín Fernandez\",\n    \"contact\": {\n        \"email\": \"dmforgan89@gmail.com\",\n        \"phone\": \"5555 5555\"\n    },\n    \"avatar\": {\n        \"isUrl\": true,\n        \"data\": \"http://www.google.com\"\n    },\n    \"login_service\": true \n}\n",
+							"raw": "{\n    \"username\": \"dmf2\",\n    \"first_name\": \"Damián\",\n    \"last_name\": \"Marquesín Fernandez\",\n    \"contact\": {\n        \"email\": \"dmforgan89@gmail.com\",\n        \"phone\": \"5555 5555\"\n    },\n    \"avatar\": {\n        \"isUrl\": true,\n        \"data\": \"http://www.google.com\"\n    },\n    \"login_service\": true \n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1194,6 +1188,58 @@
 								{
 									"key": "filter",
 									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"8d6585ea-82b4-412f-a6a3-7fea2000077d\"}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request Log AuthServer",
+			"item": [
+				{
+					"name": "View Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/requestlogauthserver?startdate=2022-06-20&enddate=2022-06-20&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"87f9c44b-681c-496d-bc12-4ee25d9f93f7\"}",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"requestlogauthserver"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "filter",
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"87f9c44b-681c-496d-bc12-4ee25d9f93f7\"}"
 								}
 							]
 						}

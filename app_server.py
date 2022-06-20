@@ -200,6 +200,8 @@ api.add_resource(authserver_relay.AllRecovery,
                  api_path + "/recovery")
 api.add_resource(authserver_relay.Recovery,
                  api_path + "/recovery/<string:username>")
+api.add_resource(authserver_relay.AuthRequestLog,
+                 api_path + "/requestlogauthserver")
 api.add_resource(requestlog.RequestLog,
                  api_path + "/requestlog")
 api.add_resource(game_progress.AllProgress,

@@ -580,3 +580,30 @@ class Recovery(Resource):
             }
             return helpers.return_request(ResponseRecoveryPost,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
+
+
+###############################################################################
+# Metodos para endpoint 'requestlog' del AuthServer
+###############################################################################
+
+# Clase que entrega los registros del request log
+class AuthRequestLog(Resource):
+
+    # verbo GET - obtener registros del request log entre fechas
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def get(self):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       get_requestlog(request.args)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseRequestLogGet = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseRequestLogGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)

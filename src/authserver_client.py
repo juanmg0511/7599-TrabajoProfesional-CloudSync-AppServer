@@ -279,3 +279,15 @@ class AuthAPIClient:
                             "recovery",
                             params=filters,
                             headers=AuthAPIClient.__headers())
+
+    ###########################################################################
+    # Metodos para endpoint 'requestlog' del AuthServer
+    ###########################################################################
+    @staticmethod
+    def get_requestlog(filters):
+        return requests.get(appServer.api_auth_client_url + "/" +
+                            appServer.api_auth_client_path + "/" +
+                            appServer.api_auth_client_version + "/" +
+                            "requestlog",
+                            params=filters,
+                            headers=AuthAPIClient.__headers())

@@ -41,27 +41,6 @@ class AuthAPIClient:
         return headers
 
     ###########################################################################
-    # Metodos para endpoint 'home' del AuthServer
-    ###########################################################################
-    @staticmethod
-    def get_ping():
-        return requests.get(appServer.api_auth_client_url + "/" +
-                            "ping",
-                            headers=AuthAPIClient.__headers())
-
-    @staticmethod
-    def get_status():
-        return requests.get(appServer.api_auth_client_url + "/" +
-                            "status",
-                            headers=AuthAPIClient.__headers())
-
-    @staticmethod
-    def get_stats():
-        return requests.get(appServer.api_auth_client_url + "/" +
-                            "stats",
-                            headers=AuthAPIClient.__headers())
-
-    ###########################################################################
     # Metodos para endpoint 'sessions' del AuthServer
     ###########################################################################
     @staticmethod

@@ -61,15 +61,6 @@ def log_request(response):
     except Exception:
         data = {}
 
-    # Maskeamos las passwords del registro a loguear
-    if "password" in data:
-        data["password"] = "*"
-    if "new_password" in data:
-        data["new_password"] = "*"
-    if (("PATCH" in method) and ("value" in data) and ("path" in data)
-       and ("/password" in data["path"])):
-        data["value"] = "*"
-
     # Parseamos la response a un diccionario
     try:
         # No logueamos las respuestas de pedidos de log!

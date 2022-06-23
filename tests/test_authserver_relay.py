@@ -325,18 +325,6 @@ class RequestLogTestCase(TestCase):
         self.assertEqual(HTTPStatus.OK, r.status_code)
 
     @mock.patch("src.authserver_client.requests.get")
-    def test_get_user_exists_should_return_bad_request(self,
-                                                       mock_get):
-
-        mock_get.side_effect = [
-            aux_functions.mockCheckSessionAdmin("testunituser_admin"),
-            aux_functions.mockCheckRelay(HTTPStatus.BAD_REQUEST)]
-
-        r = self.app.get('/api/v1/users/testunituser/exists',
-                         headers={'X-Auth-Token': 'AuthServer is mocked'})
-        self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
-
-    @mock.patch("src.authserver_client.requests.get")
     def test_get_user_avatar_should_return_ok(self,
                                               mock_get):
 

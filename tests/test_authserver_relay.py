@@ -59,8 +59,6 @@ class RequestLogTestCase(TestCase):
         self.assertEqual(HTTPStatus.UNAUTHORIZED, res.status_code)
         res = self.app.get('/api/v1/users/testunituser/avatar')
         self.assertEqual(HTTPStatus.UNAUTHORIZED, res.status_code)
-        res = self.app.get('/api/v1/users/testunituser/exists')
-        self.assertEqual(HTTPStatus.UNAUTHORIZED, res.status_code)
         res = self.app.get('/api/v1/users/testunituser/sessions')
         self.assertEqual(HTTPStatus.UNAUTHORIZED, res.status_code)
         res = self.app.get('/api/v1/sessions')

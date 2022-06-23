@@ -347,7 +347,6 @@ class UserExists(Resource):
 
     # verbo GET - chequear si existe el usuario
     @helpers.log_reqId
-    @helpers.check_token
     def get(self, username):
         try:
             response_auth = authserver_client.\

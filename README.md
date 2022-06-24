@@ -49,5 +49,5 @@ https://fiuba-qa-7599-cs-app-server.herokuapp.com/
 #### Tests
 
 - Ejecutar los siguientes comandos, con el ambiente levantado:  
-`docker exec -u root -it app-server-flask bash -c "coverage run --omit */virtualenv/*,*/usr/* -m unittest tests/*.py -v"`   
-`docker exec -u root -it app-server-flask bash -c "coverage report"`
+`docker exec -u root -it app-server-flask sh -c "coverage run --omit */virtualenv/*,*/usr/* -m unittest tests/*.py -v"`   
+`docker exec -u root -it app-server-flask sh -c "coverage report"`

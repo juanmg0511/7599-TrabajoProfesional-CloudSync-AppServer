@@ -38,15 +38,15 @@ services:
       MONGODB_REPLICA_SET: "None"
       MONGODB_AUTH_SOURCE: "None"
     volumes:
-       - authserverlogs:/home/appuser/logs
+       - appserverlogs:/home/appuser/logs
        - ".:/home/appuser/" 
     ports:
        - "80:8000"
     depends_on:
       - mongodb
     networks:
-      - frontend
-      - backend
+      - app-frontend
+      - app-backend
 
   mongodb:
     image: mongo:5.0.9
@@ -70,16 +70,16 @@ services:
     # ports:
        # - "27017:27017"
     networks:
-      - backend
+      - app-backend
 
 networks:
-  frontend:
+  app-frontend:
     driver: bridge
-  backend:
+  app-backend:
     driver: bridge
 
 volumes:
-  authserverlogs:
+  appserverlogs:
     driver: local
   mongodbdata:
     driver: local

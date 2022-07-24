@@ -18,6 +18,8 @@ from flask_log_request_id import RequestID
 from flask_cors import CORS
 # PyMongo para el manejo de MongoDB
 from flask_pymongo import PyMongo
+# Flask-Talisman para el manejo de SSL
+from flask_talisman import Talisman
 
 # Importacion de clases necesarias
 from src import home, authserver_relay, game_progress, high_scores,\
@@ -212,6 +214,12 @@ api.add_resource(high_scores.AllHighScores,
                  api_path + "/highscores")
 api.add_resource(high_scores.HighScores,
                  api_path + "/highscores/<string:username>")
+
+# Wrappeamos con Talisman a la aplicacion Flask
+# Solo permitimos http para el ambiente de desarrollo
+Talisman(app,
+         force_https=(False if app_env == "DEV" else True),
+         content_security_policy=None)
 
 # Inicio del server en forma directa con WSGI
 # Toma el puerto y modo de las variables de entorno

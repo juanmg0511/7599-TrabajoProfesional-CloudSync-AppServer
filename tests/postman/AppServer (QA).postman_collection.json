@@ -55,8 +55,8 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/status",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/status",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -75,8 +75,8 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/stats?startdate=2022-06-01&enddate=2022-06-05&sort_ascending=false",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/stats?startdate=2022-06-01&enddate=2022-06-05&sort_ascending=false",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -120,8 +120,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers?start=0&limit=0&show_closed=true",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers?start=0&limit=0&show_closed=true",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -162,8 +162,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -191,8 +191,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod/sessions?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod/sessions?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -240,8 +240,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -277,8 +277,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -315,8 +315,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -353,8 +353,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -387,8 +387,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users?start=0&limit=0&show_closed=true",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users?start=0&limit=0&show_closed=true",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -429,8 +429,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -463,8 +463,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/avatar",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/avatar",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -493,8 +493,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/exists",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/exists",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -523,8 +523,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/sessions?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/sessions?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -555,7 +555,13 @@
 					"name": "New User (user & password)",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"username\": \"juan0514\",\n    \"password\": \"123456\",\n    \"first_name\": \"Damián\",\n    \"last_name\": \"Marquesín Fernandez\",\n    \"contact\": {\n        \"email\": \"juanmg0511@gmail.com\",\n        \"phone\": \"5555 5555\"\n    },\n    \"avatar\": {\n        \"isUrl\": true,\n        \"data\": \"http://www.google.com\"\n    },\n    \"login_service\": false \n}\n",
@@ -566,8 +572,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -603,8 +609,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -640,8 +646,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/dmf",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/dmf",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -678,8 +684,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -716,8 +722,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -754,8 +760,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/dmf",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/dmf",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -788,8 +794,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -849,8 +855,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -894,8 +900,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -925,8 +931,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -953,8 +959,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions/{{X-Auth-Token}}",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions/{{X-Auth-Token}}",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -982,8 +988,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions/{{X-Auth-Token}}",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions/{{X-Auth-Token}}",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1016,8 +1022,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1070,8 +1076,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1098,8 +1104,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1130,8 +1136,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1164,8 +1170,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/requestlog?startdate=2022-06-01&enddate=2022-06-05&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"8d6585ea-82b4-412f-a6a3-7fea2000077d\"}",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/requestlog?startdate=2022-06-01&enddate=2022-06-05&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"8d6585ea-82b4-412f-a6a3-7fea2000077d\"}",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1263,8 +1269,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1301,8 +1307,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1339,8 +1345,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1377,8 +1383,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1411,8 +1417,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores?start=0&limit=0",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores?start=0&limit=0",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1449,8 +1455,8 @@
 							}
 						],
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1487,8 +1493,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",
@@ -1524,8 +1530,8 @@
 							}
 						},
 						"url": {
-							"raw": "http://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
-							"protocol": "http",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
+							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
 								"herokuapp",

@@ -16,6 +16,8 @@ from flask_restful import Resource, reqparse
 from flask_log_request_id import current_request_id
 from http import HTTPStatus
 
+# Importacion de las configuracion del App Server
+import app_server_config as config
 # Importacion del archivo principal y helpers
 import app_server as appServer
 from src import helpers
@@ -33,7 +35,7 @@ def log_request(response):
     appServer.app.logger.debug(helpers.log_request_id() +
                                'Logging request data to DB.')
     # Escapeamos paths que no son de la api
-    if (not(appServer.api_path in request.path)):
+    if (not(config.api_path in request.path)):
         appServer.app.logger.debug(helpers.log_request_id() +
                                    'Request is not from API path, skipping.')
         return response
@@ -79,7 +81,7 @@ def log_request(response):
         "request_id": request_id,
         "remote_ip": ip_address,
         "host": host,
-        "api_version": "v" + appServer.api_version,
+        "api_version": "v" + config.api_version,
         "method": method,
         "path": path,
         "user_name": g.session_username,

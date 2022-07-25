@@ -19,6 +19,8 @@ from http import HTTPStatus
 # Wraps, para implementacion de decorators
 from functools import wraps
 
+# Importacion de las configuracion del App Server
+import app_server_config as config
 # Importacion del archivo principal
 import app_server as appServer
 # Importacion del cliente de AuthServer
@@ -216,35 +218,35 @@ def is_admin():
 # Funcion que loguea los parametros configurados en variables de entorno
 def config_log():
 
-    if (appServer.app_env != "PROD"):
+    if (config.app_env != "PROD"):
         appServer.app.logger.warning("**************************************")
-        appServer.app.logger.warning("* This server is: " + appServer.app_env)
+        appServer.app.logger.warning("* This server is: " + config.app_env)
         appServer.app.logger.warning("**************************************")
 
     appServer.app.logger.info("Database server: " +
-                              appServer.mongodb_hostname)
+                              config.mongodb_hostname)
     appServer.app.logger.debug("Database name: " +
-                               appServer.mongodb_database)
+                               config.mongodb_database)
     appServer.app.logger.debug("Database username: " +
-                               appServer.mongodb_username)
+                               config.mongodb_username)
     appServer.app.logger.debug("Database using SSL: " +
-                               appServer.mongodb_ssl)
+                               config.mongodb_ssl)
     appServer.app.logger.info("Database replica set: " +
-                              appServer.mongodb_replica_set)
+                              config.mongodb_replica_set)
     appServer.app.logger.debug("Database auth source: " +
-                               appServer.mongodb_auth_source)
+                               config.mongodb_auth_source)
 
     appServer.app.logger.debug("API key for AuthServer is: \"" +
-                               str(appServer.api_auth_client_id) +
+                               str(config.api_auth_client_id) +
                                "\".")
     appServer.app.logger.info("AuthServer base URL is: \"" +
-                              str(appServer.api_auth_client_url) +
+                              str(config.api_auth_client_url) +
                               "\".")
     appServer.app.logger.info("AuthServer API path is: \"" +
-                              str(appServer.api_auth_client_path) +
+                              str(config.api_auth_client_path) +
                               "\".")
     appServer.app.logger.info("AuthServer API version is: \"" +
-                              str(appServer.api_auth_client_version) +
+                              str(config.api_auth_client_version) +
                               "\".")
 
     return 0

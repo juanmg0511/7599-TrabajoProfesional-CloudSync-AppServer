@@ -24,7 +24,7 @@ RUN touch /home/appuser/logs/auth_server.log
 ENV HOME=/home/appuser
 USER appuser
 # Copying files
-COPY app_server.py gunicorn_config.py /home/appuser/
+COPY app_server.py app_server_config.py gunicorn_config.py /home/appuser/
 COPY src /home/appuser/src
 COPY tests /home/appuser/tests
 # Configuring network and launching server

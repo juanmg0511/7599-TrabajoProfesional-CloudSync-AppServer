@@ -11,6 +11,8 @@
 from flask_restful import Resource, reqparse
 from http import HTTPStatus
 
+# Importacion de las configuracion del App Server
+import app_server_config as config
 # Importacion del archivo principal y helpers
 import app_server as appServer
 from src import helpers
@@ -21,7 +23,7 @@ class Home(Resource):
     @helpers.log_reqId
     def get(self):
         homeResponseGet = "7599-cloudsync-app-server-v" + \
-                          appServer.server_version
+                          config.server_version
         appServer.app.logger.info(helpers.log_request_id() +
                                   'Displaying home with server information.')
         return helpers.return_request(homeResponseGet, HTTPStatus.OK)
@@ -115,7 +117,7 @@ class Status(Resource):
         statusResponseGet = {
             "code": 0,
             "message": "7599-cloudsync-app-server-v" +
-                       appServer.server_version,
+                       config.server_version,
             "data": {
                         "server_status": "online",
                         "database_status": dbStatus

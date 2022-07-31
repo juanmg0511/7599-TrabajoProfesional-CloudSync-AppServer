@@ -64,7 +64,9 @@ class RequestLogTestCase(TestCase):
                                   'X-Auth-Token': 'AuthServer is mocked'},
                          json=dict(
                            next_level=5,
-                           difficulty_level=5
+                           difficulty_level=5,
+                           time_elapsed="20:10:40.045",
+                           gold_collected=5000
                          ))
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertEqual("testunituser", r.json["username"])
@@ -81,7 +83,9 @@ class RequestLogTestCase(TestCase):
                                   'X-Auth-Token': 'AuthServer is mocked'},
                          json=dict(
                            next_level=5,
-                           difficulty_level=5
+                           difficulty_level=5,
+                           time_elapsed="20:10:40.045",
+                           gold_collected=5000
                          ))
         self.assertEqual(HTTPStatus.CREATED, r.status_code)
         self.assertEqual("testunituser_new", r.json["username"])

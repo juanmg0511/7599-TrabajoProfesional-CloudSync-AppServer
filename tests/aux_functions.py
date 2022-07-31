@@ -149,6 +149,8 @@ def createGameProgress(username):
         "username": username,
         "next_level": 5,
         "difficulty_level": 5,
+        "time_elapsed": "20:10:40.045",
+        "gold_collected": 5000,
         "date_created": datetime.utcnow().isoformat(),
         "date_updated": None
     }

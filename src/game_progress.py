@@ -115,6 +115,8 @@ class AllProgress(Resource):
                 "username": existingUser["username"],
                 "next_level": existingUser["next_level"],
                 "difficulty_level": existingUser["difficulty_level"],
+                "time_elapsed": existingUser["time_elapsed"],
+                "gold_collected": existingUser["gold_collected"],
                 "date_created": existingUser["date_created"],
                 "date_updated": existingUser["date_updated"]
             }
@@ -162,6 +164,8 @@ class Progress(Resource):
                 "username": existingGameProgress["username"],
                 "next_level": existingGameProgress["next_level"],
                 "difficulty_level": existingGameProgress["difficulty_level"],
+                "time_elapsed": existingGameProgress["time_elapsed"],
+                "gold_collected": existingGameProgress["gold_collected"],
                 "date_created": existingGameProgress["date_created"],
                 "date_updated": existingGameProgress["date_updated"]
             }
@@ -195,6 +199,10 @@ class Progress(Resource):
                                 required=True, nullable=False)
             parser.add_argument("difficulty_level", type=int,
                                 required=True, nullable=False)
+            parser.add_argument("time_elapsed", type=helpers.non_empty_string,
+                                required=True, nullable=False)
+            parser.add_argument("gold_collected", type=int,
+                                required=True, nullable=False)
             args = parser.parse_args()
         except Exception:
             progressResponsePut = {
@@ -215,6 +223,8 @@ class Progress(Resource):
             progressToUpdate = {
                 "next_level": args["next_level"],
                 "difficulty_level": args["difficulty_level"],
+                "time_elapsed": args["time_elapsed"],
+                "gold_collected": args["gold_collected"],
                 "date_created": existingGameProgress["date_created"],
                 "date_updated": datetime.utcnow().isoformat()
             }
@@ -235,6 +245,8 @@ class Progress(Resource):
                 "username": username,
                 "next_level": args["next_level"],
                 "difficulty_level": args["difficulty_level"],
+                "time_elapsed": args["time_elapsed"],
+                "gold_collected": args["gold_collected"],
                 "date_created": datetime.utcnow().isoformat(),
                 "date_updated": None
                 }

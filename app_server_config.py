@@ -52,6 +52,7 @@ mongodb_password_default = "*"
 mongodb_ssl_default = "false"
 mongodb_replica_set_default = "None"
 mongodb_auth_source_default = "None"
+username_max_length_default = 64
 
 
 ###############################################################################
@@ -69,6 +70,11 @@ app_debug = os.environ.get("APP_DEBUG",
                            app_debug_default)
 app_port = os.environ.get("APP_PORT", os.environ.get("PORT",
                           app_port_default))
+
+
+# Lectura de la longitud maxima para usernames
+username_max_length = os.environ.get("USERNAME_MAX_LENGTH",
+                                     username_max_length_default)
 
 
 # Lectura de la API KEY utilizada por el AuthServer

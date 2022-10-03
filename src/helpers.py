@@ -16,6 +16,8 @@ from flask import g
 from flask import request
 from flask_log_request_id import current_request_id
 from http import HTTPStatus
+# Python-Usernames, para la validacion de nombres de usuario
+from usernames import is_safe_username
 # Wraps, para implementacion de decorators
 from functools import wraps
 
@@ -278,6 +280,29 @@ def non_empty_date(d):
     except Exception:
         raise ValueError("Must be valid date.")
     return d
+
+
+# Funcion que chequea si un nombre de usario es valido
+#
+# https://pypi.org/project/python-usernames/
+#
+# Provides a default regex validator.
+# Validates against list of banned words that should not be used as username.
+#
+# The default regular expression is as follows:
+# ^                  beginning of string
+# (?!_$)             no only _
+# (?![-.])           no - or . at the beginning
+# (?!.*[_.-]{2})     no __ or _. or ._ or .. or -- inside
+# [a-zA-Z0-9_.-]+    allowed characters, atleast one must be present
+# (?<![.-])          no - or . at the end
+# $                  end of string
+def non_empty_and_safe_username(u):
+    if is_safe_username(u,
+                        max_length=int(
+                            config.username_max_length)) is False:
+        raise ValueError("Invalid username.")
+    return u
 
 
 # Funcion que devuelve el request id, o None si no aplica

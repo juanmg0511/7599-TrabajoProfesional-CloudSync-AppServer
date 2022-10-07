@@ -14,6 +14,8 @@ from flask_restful import Resource, reqparse
 from flask import request
 from http import HTTPStatus
 
+# Importacion de las configuracion del App Server
+import app_server_config as config
 # Importacion del archivo principal y helpers
 import app_server as appServer
 from src import helpers
@@ -74,10 +76,10 @@ class AllProgress(Resource):
         query_limit = str(args.get("limit", 0))
         if (query_limit != "None"):
             query_limit = int(query_limit)
-            if (query_limit < 0):
-                query_limit = 0
+            if (query_limit <= 0 or query_limit > int(config.page_max_size)):
+                query_limit = int(config.page_max_size)
         else:
-            query_limit = 0
+            query_limit = int(config.page_max_size)
 
         # Se construye el query para filtrar en base a los parametros
         # opcionales

@@ -25,7 +25,9 @@ services:
       # Puede ser "DEV", "QA", "PROD"
       APP_ENV: "DEV"
       # Longitud maxima para nombres de usuarios
-      USERNAME_MAX_LENGTH: 64      
+      USERNAME_MAX_LENGTH: 64
+      # Tamanio maximo de pagina para la devolucion de resultados
+      PAGE_MAX_SIZE: 100      
       # Datos para conectarse al AuthServer
       API_AUTH_CLIENT_ID: "ef00a570-7cfc-4638-8cad-d085fd98b6e3"
       API_AUTH_CLIENT_URL: "http://127.0.0.1:81"

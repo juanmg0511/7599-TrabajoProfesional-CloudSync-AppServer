@@ -41,6 +41,7 @@ app_port_default = 8000
 
 # Para todos los modos
 app_env_default = "DEV"
+page_max_size_default = 100
 api_auth_client_id_default = "44dd22ca-836d-40b6-aa49-7981ded03667"
 api_auth_client_url_default = "http://127.0.0.1:81"
 api_auth_client_path_default = "api"
@@ -75,6 +76,11 @@ app_port = os.environ.get("APP_PORT", os.environ.get("PORT",
 # Lectura de la longitud maxima para usernames
 username_max_length = os.environ.get("USERNAME_MAX_LENGTH",
                                      username_max_length_default)
+
+
+# Lectura del tamanio maximo de pagina para la devolucion de resultados
+page_max_size = os.environ.get("PAGE_MAX_SIZE",
+                               page_max_size_default)
 
 
 # Lectura de la API KEY utilizada por el AuthServer

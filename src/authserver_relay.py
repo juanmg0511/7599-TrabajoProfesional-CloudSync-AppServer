@@ -10,6 +10,7 @@
 # Flask, para la implementacion del servidor REST
 from flask_restful import Resource
 from flask import request
+from flask import g
 from http import HTTPStatus
 
 # Importacion del cliente de AuthServer y helpers
@@ -403,6 +404,8 @@ class UserSessions(Resource):
 # Operaciones CRUD: Create, Read, Update, Delete
 # verbo GET - listar sesiones activas
 # verbo POST - crear sesion, si existe refresca el token
+# verbo DELETE - cerrar sesion de todos los usuarios,
+# menos la sesion que hace el pedido
 class AllSessions(Resource):
 
     # verbo POST - crear sesion, si existe refresca el token
@@ -439,6 +442,26 @@ class AllSessions(Resource):
                 "data": None
             }
             return helpers.return_request(ResponseSessionGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+    # verbo DELETE - cerrar sesion de todos los usuarios,
+    # menos la sesion que hace el pedido
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def delete(self):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       delete_all_sessions(g.session_token)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseSessionDelete = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseSessionDelete,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
 
 

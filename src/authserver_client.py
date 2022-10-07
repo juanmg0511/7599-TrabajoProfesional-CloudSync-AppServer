@@ -53,6 +53,15 @@ class AuthAPIClient:
                             headers=AuthAPIClient.__headers())
 
     @staticmethod
+    def delete_all_sessions(session_token):
+        return requests.delete(config.api_auth_client_url + "/" +
+                               config.api_auth_client_path + "/" +
+                               config.api_auth_client_version + "/" +
+                               "sessions?token=" +
+                               session_token,
+                               headers=AuthAPIClient.__headers())
+
+    @staticmethod
     def get_session(session_token):
         return requests.get(config.api_auth_client_url + "/" +
                             config.api_auth_client_path + "/" +

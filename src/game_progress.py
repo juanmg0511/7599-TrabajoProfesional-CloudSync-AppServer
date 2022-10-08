@@ -53,7 +53,8 @@ class AllProgress(Resource):
                                 nullable=False)
             # Texto para filtrar los resultados
             parser.add_argument("user_filter",
-                                type=helpers.non_empty_and_safe_username,
+                                type=helpers.
+                                non_empty_and_safe_filter_username,
                                 required=False,
                                 nullable=False)
             args = parser.parse_args()
@@ -164,7 +165,8 @@ class AllProgress(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument("username",
-                                type=helpers.non_empty_and_safe_username,
+                                type=helpers.
+                                non_empty_and_safe_filter_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("next_level",
@@ -310,7 +312,8 @@ class Progress(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument("username",
-                                type=helpers.non_empty_and_safe_username,
+                                type=helpers.
+                                non_empty_and_safe_filter_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("next_level",

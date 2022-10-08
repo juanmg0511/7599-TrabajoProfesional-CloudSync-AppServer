@@ -165,7 +165,7 @@ class AllHighScores(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument("username",
                                 type=helpers.
-                                non_empty_and_safe_filter_username,
+                                non_empty_and_safe_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("achieved_level",
@@ -296,7 +296,7 @@ class HighScores(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument("username",
                                 type=helpers.
-                                non_empty_and_safe_filter_username,
+                                non_empty_and_safe_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("achieved_level",

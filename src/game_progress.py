@@ -166,7 +166,7 @@ class AllProgress(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument("username",
                                 type=helpers.
-                                non_empty_and_safe_filter_username,
+                                non_empty_and_safe_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("next_level",
@@ -313,7 +313,7 @@ class Progress(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument("username",
                                 type=helpers.
-                                non_empty_and_safe_filter_username,
+                                non_empty_and_safe_username,
                                 required=True,
                                 nullable=False)
             parser.add_argument("next_level",

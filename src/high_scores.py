@@ -12,6 +12,8 @@ from datetime import datetime
 # Flask, para la implementacion del servidor REST
 from flask_restful import Resource, reqparse
 from flask import request
+# importing ObjectId from bson library
+from bson.objectid import ObjectId
 from http import HTTPStatus
 
 # Importacion de las configuracion del App Server
@@ -156,22 +158,34 @@ class AllHighScores(Resource):
     # verbo POST - nuevo high score para un usuario
     @helpers.log_reqId
     @helpers.check_token
-    @helpers.limit_own_user_role
+    @helpers.deny_user_role
     def post(self):
         try:
             parser = reqparse.RequestParser()
-            parser.add_argument("username", type=helpers.non_empty_string,
-                                required=True, nullable=False)
-            parser.add_argument("achieved_level", type=int,
-                                required=True, nullable=False)
-            parser.add_argument("difficulty_level", type=int,
-                                required=True, nullable=False)
-            parser.add_argument("time_elapsed", type=helpers.non_empty_string,
-                                required=True, nullable=False)
-            parser.add_argument("gold_collected", type=int,
-                                required=True, nullable=False)
-            parser.add_argument("high_score", type=int,
-                                required=True, nullable=False)
+            parser.add_argument("username",
+                                type=helpers.non_empty_and_safe_username,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("achieved_level",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("difficulty_level",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("time_elapsed",
+                                type=helpers.non_empty_string,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("gold_collected",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("high_score",
+                                type=int,
+                                required=True,
+                                nullable=False)
             args = parser.parse_args()
         except Exception:
             AllHighScoresResponsePost = {
@@ -182,13 +196,15 @@ class AllHighScores(Resource):
             return helpers.return_request(AllHighScoresResponsePost,
                                           HTTPStatus.BAD_REQUEST)
 
+        # Pasamos el usuario que viene en el path a minusculas
+        username = str.lower(args["username"])
         appServer.app.logger.info(helpers.log_request_id() +
                                   "New high score for user '" +
-                                  args["username"] +
+                                  str(username) +
                                   "' requested.")
 
         highScoreToInsert = {
-            "username": args["username"],
+            "username": str(username),
             "achieved_level": args["achieved_level"],
             "difficulty_level": args["difficulty_level"],
             "time_elapsed": args["time_elapsed"],
@@ -212,27 +228,305 @@ class AllHighScores(Resource):
 
 # Clase que define el endpoint para trabajar con high scores
 # Operaciones CRUD: Create, Read, Update, Delete
-# verbo GET - leer registro de high score
-# verbo DELETE - borrar registro de high score
+# verbo GET - leer un registro de high score
+# verbo PUT - actualizar un registro de high score
+# verbo DELETE - borrar un registro de high score
 class HighScores(Resource):
 
-    # verbo GET - leer registros de high score
+    # verbo GET - leer un registro de high score
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def get(self, id):
+        appServer.app.logger.info(helpers.log_request_id() + "High score " +
+                                  "record with id '" +
+                                  id +
+                                  "' requested.")
+
+        try:
+            id_search = ObjectId(id)
+        except Exception:
+            id_search = None
+
+        try:
+            existingHighScore = appServer.db.highscores.find_one({
+                "_id": id_search
+            })
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
+
+        if (existingHighScore is not None):
+            retrievedHighScore = {
+                "id": str(existingHighScore["_id"]),
+                "username": existingHighScore["username"],
+                "achieved_level": existingHighScore["achieved_level"],
+                "difficulty_level": existingHighScore["difficulty_level"],
+                "time_elapsed": existingHighScore["time_elapsed"],
+                "gold_collected": existingHighScore["gold_collected"],
+                "high_score": existingHighScore["high_score"],
+                "date_created": existingHighScore["date_created"],
+                "date_updated": existingHighScore["date_updated"]
+            }
+            return helpers.return_request(retrievedHighScore,
+                                          HTTPStatus.OK)
+        else:
+            progressResponseGet = {
+                "code": -1,
+                "message": "High score record with id '" +
+                           id +
+                           "' not found.",
+                "data": None
+            }
+            return helpers.return_request(progressResponseGet,
+                                          HTTPStatus.NOT_FOUND)
+
+    # verbo PUT - actualizar un registro de high score
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def put(self, id):
+        appServer.app.logger.info(helpers.log_request_id() + "Highscore " +
+                                  "record with id '" +
+                                  id +
+                                  "'update requested.")
+
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument("username",
+                                type=helpers.non_empty_and_safe_username,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("achieved_level",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("difficulty_level",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("time_elapsed",
+                                type=helpers.non_empty_string,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("gold_collected",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            parser.add_argument("high_score",
+                                type=int,
+                                required=True,
+                                nullable=False)
+            args = parser.parse_args()
+        except Exception:
+            AllHighScoresResponsePost = {
+                "code": -1,
+                "message": "Bad request. Missing required arguments.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponsePost,
+                                          HTTPStatus.BAD_REQUEST)
+
+        try:
+            id_search = ObjectId(id)
+        except Exception:
+            id_search = None
+
+        try:
+            existingHighScore = appServer.db.highscores.find_one({
+                "_id": id_search
+            })
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
+
+        if (existingHighScore is not None):
+
+            highScoreToUpdate = {
+                "username": str.lower(args["username"]),
+                "achieved_level": args["achieved_level"],
+                "difficulty_level": args["difficulty_level"],
+                "time_elapsed": args["time_elapsed"],
+                "gold_collected": args["gold_collected"],
+                "high_score": args["high_score"],
+                "date_created": existingHighScore["date_created"],
+                "date_updated": datetime.utcnow().isoformat()
+            }
+            highscoreResponsePut = highScoreToUpdate.copy()
+            try:
+                appServer.db.highscores.update_one(
+                    {"_id": id_search},
+                    {"$set": highScoreToUpdate}
+                )
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
+            id_userToUpdate = str(existingHighScore["_id"])
+            highscoreResponsePut["id"] = id_userToUpdate
+
+            return helpers.return_request(highscoreResponsePut, HTTPStatus.OK)
+
+        else:
+            highscoreResponsePut = {
+                "code": -1,
+                "message": "High score record with id '" +
+                           id +
+                           "' not found.",
+                "data": None
+            }
+            return helpers.return_request(highscoreResponsePut,
+                                          HTTPStatus.NOT_FOUND)
+
+    # verbo DELETE - borrar un registro de high score
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def delete(self, id):
+        appServer.app.logger.info(helpers.log_request_id() + "High score " +
+                                  "record with id '" +
+                                  id +
+                                  "' deletion requested.")
+
+        try:
+            id_search = ObjectId(id)
+        except Exception:
+            id_search = None
+
+        try:
+            existingHighScores = appServer.db.highscores.find_one({
+                "_id": id_search
+            })
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
+        if (existingHighScores is not None):
+
+            try:
+                appServer.db.highscores.delete_one({
+                    "_id": id_search
+                })
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
+
+            HighScoresResponseDelete = {
+                "code": 0,
+                "message": "High score record with id '" +
+                           id +
+                           "' deleted.",
+                "data": None
+            }
+            return helpers.return_request(HighScoresResponseDelete,
+                                          HTTPStatus.OK)
+        HighScoresResponseDelete = {
+            "code": -1,
+            "message": "High score records with id '" +
+                       id +
+                       "' not found.",
+            "data": None
+        }
+        return helpers.return_request(HighScoresResponseDelete,
+                                      HTTPStatus.NOT_FOUND)
+
+
+# Clase que define el endpoint para obtener los highscores de un usuario
+# verbo GET - leer registros de high score del usuario
+# verbo POST - nuevo high score para un usuario
+# verbo DELETE - borrar todos registros de high score del usuario
+class UserHighscores(Resource):
+
+    # verbo GET - leer registros de high score del usuario
     @helpers.log_reqId
     @helpers.check_token
     @helpers.limit_own_user_role
     def get(self, username):
+        # Pasamos el usuario que viene en el path a minusculas
+        username = str.lower(username)
+
         appServer.app.logger.info(helpers.log_request_id() + "High score " +
                                   "records for user '" +
                                   username +
                                   "' requested.")
 
         try:
-            existingHighScores = appServer.db.highscores.find(
-                {"username": username})
+            parser = reqparse.RequestParser()
+            # Primer registro de la collection a mostrar
+            # El indice arranca en 0!
+            parser.add_argument("start",
+                                type=int,
+                                required=False,
+                                nullable=False)
+            # Cantidad de registros de la collection a
+            # mostrar por pagina
+            # Si es igual a 0 es como si no estuviera
+            parser.add_argument("limit",
+                                type=int,
+                                required=False,
+                                nullable=False)
+            args = parser.parse_args()
+        except Exception:
+            AllHighScoresResponseGet = {
+                "code": -1,
+                "message": "Bad request. Missing required arguments.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponseGet,
+                                          HTTPStatus.BAD_REQUEST)
+
+        # Parseo de los parametros para el pagindo
+        query_start = str(args.get("start", 0))
+        if (query_start != "None"):
+            query_start = int(query_start)
+            if (query_start < 0):
+                query_start = 0
+        else:
+            query_start = 0
+        query_limit = str(args.get("limit", 0))
+        if (query_limit != "None"):
+            query_limit = int(query_limit)
+            if (query_limit <= 0 or query_limit > int(config.page_max_size)):
+                query_limit = int(config.page_max_size)
+        else:
+            query_limit = int(config.page_max_size)
+
+        # Se construye el query para filtrar en base al usuario
+        find_query = {
+            "username": str(username)
+        }
+
+        # Operacion de base de datos
+        try:
+            existingHighScores = appServer.db.highscores.\
+                                 find(find_query).\
+                                 skip(query_start).\
+                                 limit(query_limit)
+            existingHighScoresCount = appServer.db.highscores.\
+                count_documents(find_query)
         except Exception as e:
             return helpers.handleDatabasebError(e)
 
-        AllHighScoresResponseGet = []
+        # Calculo de las URL hacia anterior y siguiente
+        start_previous = query_start - query_limit
+        start_next = query_start + query_limit
+        if (start_previous < 0
+           or (start_previous >= existingHighScoresCount)
+           or (query_start == 0 and query_limit == 0)
+           or (query_limit == 0)):
+            url_previous = None
+        else:
+            url_previous = request.path +\
+                           "?start=" +\
+                           str(start_previous) +\
+                           "&limit=" +\
+                           str(query_limit)
+
+        if (start_next >= existingHighScoresCount
+           or (query_start == 0 and query_limit == 0)
+           or (query_limit == 0)):
+            url_next = None
+        else:
+            url_next = request.path +\
+                       "?start=" +\
+                       str(start_next) +\
+                       "&limit=" +\
+                       str(query_limit)
+
+        AllHighScoresResultGet = []
         for existingHighScore in existingHighScores:
             retrievedHighScore = {
                 "id": str(existingHighScore["_id"]),
@@ -245,27 +539,84 @@ class HighScores(Resource):
                 "date_created": existingHighScore["date_created"],
                 "date_updated": existingHighScore["date_updated"]
             }
-            AllHighScoresResponseGet.append(retrievedHighScore)
+            AllHighScoresResultGet.append(retrievedHighScore)
 
-        if (len(AllHighScoresResponseGet) == 0):
-            progressResponseGet = {
-                    "code": -1,
-                    "message": "High score records for user '" +
-                               username +
-                               "' not found.",
-                    "data": None
-                }
-            return helpers.return_request(progressResponseGet,
-                                          HTTPStatus.NOT_FOUND)
-        else:
-            return helpers.return_request(AllHighScoresResponseGet,
-                                          HTTPStatus.OK)
+        # Construimos la respuesta paginada
+        AllHighScoresResponseGet = {
+            "total": existingHighScoresCount,
+            "limit": query_limit,
+            "next": url_next,
+            "previous": url_previous,
+            "results": AllHighScoresResultGet
+        }
+        return helpers.return_request(AllHighScoresResponseGet,
+                                      HTTPStatus.OK)
 
-    # verbo DELETE - borrar registro de game progress
+    # verbo POST - nuevo high score para un usuario
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.limit_own_user_role
+    def post(self, username):
+        # Pasamos el usuario que viene en el path a minusculas
+        username = str.lower(username)
+
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument("achieved_level", type=int,
+                                required=True, nullable=False)
+            parser.add_argument("difficulty_level", type=int,
+                                required=True, nullable=False)
+            parser.add_argument("time_elapsed", type=helpers.non_empty_string,
+                                required=True, nullable=False)
+            parser.add_argument("gold_collected", type=int,
+                                required=True, nullable=False)
+            parser.add_argument("high_score", type=int,
+                                required=True, nullable=False)
+            args = parser.parse_args()
+        except Exception:
+            AllHighScoresResponsePost = {
+                "code": -1,
+                "message": "Bad request. Missing required arguments.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponsePost,
+                                          HTTPStatus.BAD_REQUEST)
+
+        appServer.app.logger.info(helpers.log_request_id() +
+                                  "New high score for user '" +
+                                  str(username) +
+                                  "' requested.")
+
+        highScoreToInsert = {
+            "username": str(username),
+            "achieved_level": args["achieved_level"],
+            "difficulty_level": args["difficulty_level"],
+            "time_elapsed": args["time_elapsed"],
+            "gold_collected": args["gold_collected"],
+            "high_score": args["high_score"],
+            "date_created": datetime.utcnow().isoformat(),
+            "date_updated": None
+        }
+        AllHighScoresResponsePost = highScoreToInsert.copy()
+        try:
+            appServer.db.highscores.insert_one(highScoreToInsert)
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
+        id_highScoreToInsert = str(highScoreToInsert["_id"])
+        AllHighScoresResponsePost["id"] = id_highScoreToInsert
+        AllHighScoresResponsePost.pop("password", None)
+
+        return helpers.return_request(AllHighScoresResponsePost,
+                                      HTTPStatus.CREATED)
+
+    # verbo DELETE - borrar todos registros de high score del usuario
     @helpers.log_reqId
     @helpers.check_token
     @helpers.limit_own_user_role
     def delete(self, username):
+        # Pasamos el usuario que viene en el path a minusculas
+        username = str.lower(username)
+
         appServer.app.logger.info(helpers.log_request_id() + "High score " +
                                   "records for user '" +
                                   username +

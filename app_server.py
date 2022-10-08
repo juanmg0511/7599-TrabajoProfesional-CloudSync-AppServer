@@ -141,6 +141,10 @@ api.add_resource(authserver_relay.UserExists,
                  config.api_path + "/users/<string:username>/exists")
 api.add_resource(authserver_relay.UserSessions,
                  config.api_path + "/users/<string:username>/sessions")
+api.add_resource(high_scores.UserHighscores,
+                 config.api_path + "/users/<string:username>/highscores")
+api.add_resource(game_progress.UserProgress,
+                 config.api_path + "/users/<string:username>/gameprogress")
 api.add_resource(authserver_relay.AllSessions,
                  config.api_path + "/sessions")
 api.add_resource(authserver_relay.Session,
@@ -156,11 +160,11 @@ api.add_resource(requestlog.RequestLog,
 api.add_resource(game_progress.AllProgress,
                  config.api_path + "/gameprogress")
 api.add_resource(game_progress.Progress,
-                 config.api_path + "/gameprogress/<string:username>")
+                 config.api_path + "/gameprogress/<string:id>")
 api.add_resource(high_scores.AllHighScores,
                  config.api_path + "/highscores")
 api.add_resource(high_scores.HighScores,
-                 config.api_path + "/highscores/<string:username>")
+                 config.api_path + "/highscores/<string:id>")
 
 # Wrappeamos con Talisman a la aplicacion Flask
 # Solo permitimos http para el ambiente de desarrollo

@@ -14,7 +14,8 @@ from flask import g
 from http import HTTPStatus
 
 # Importacion del cliente de AuthServer y helpers
-from src import authserver_client, helpers
+from src import authserver_client
+from src import helpers
 
 
 ###############################################################################

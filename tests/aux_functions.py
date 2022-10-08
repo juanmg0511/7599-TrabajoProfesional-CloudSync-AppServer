@@ -156,6 +156,7 @@ def createGameProgress(username):
     }
 
     app_server.db.gameprogress.insert_one(my_mock_response)
+    return my_mock_response["_id"]
 
 
 # Crea un registro de high score en la base de datos
@@ -173,6 +174,7 @@ def createHighScore(username):
     }
 
     app_server.db.highscores.insert_one(my_mock_response)
+    return my_mock_response["_id"]
 
 
 # Borra los registros de game progress de la base de datos

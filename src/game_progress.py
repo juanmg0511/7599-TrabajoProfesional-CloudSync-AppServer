@@ -20,7 +20,7 @@ from http import HTTPStatus
 import app_server_config as config
 # Importacion del archivo principal y helpers
 import app_server as appServer
-from src import helpers
+from src import authserver_client, helpers
 
 
 # Clase que define el endpoint para trabajar con game progress
@@ -204,6 +204,20 @@ class AllProgress(Resource):
                                   username +
                                   "'creation requested.")
 
+        # Buscamos el usuario para el que se quiere crear el registro
+        # en la base de datos del auth server
+        response = authserver_client.AuthAPIClient.get_user(username)
+        if (response.status_code == 404):
+            progressResponsePost = {
+                "code": -1,
+                "message": "User '" +
+                           username +
+                           "' does not exist.",
+                "data": None
+            }
+            return helpers.return_request(progressResponsePost,
+                                          HTTPStatus.NOT_FOUND)
+
         try:
             existingGameProgress = appServer.db.gameprogress.find_one({
                 "username": username
@@ -247,8 +261,7 @@ class AllProgress(Resource):
 # Clase que define el endpoint para trabajar con game progress
 # Operaciones CRUD: Create, Read, Update, Delete
 # verbo GET - leer registro de game progress
-# verbo PUT - actualizar registro completo de game progress,
-#             si no existe lo crea
+# verbo PUT - actualizar registro completo de game progress
 # verbo DELETE - borrar registro de game progress
 class Progress(Resource):
 
@@ -521,6 +534,20 @@ class UserProgress(Resource):
             }
             return helpers.return_request(progressResponsePut,
                                           HTTPStatus.BAD_REQUEST)
+
+        # Buscamos el usuario para el que se quiere crear el registro
+        # en la base de datos del auth server
+        response = authserver_client.AuthAPIClient.get_user(username)
+        if (response.status_code == 404):
+            progressResponsePost = {
+                "code": -1,
+                "message": "User '" +
+                           username +
+                           "' does not exist.",
+                "data": None
+            }
+            return helpers.return_request(progressResponsePost,
+                                          HTTPStatus.NOT_FOUND)
 
         try:
             existingGameProgress = appServer.db.gameprogress.find_one(

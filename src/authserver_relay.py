@@ -13,6 +13,8 @@ from flask import request
 from flask import g
 from http import HTTPStatus
 
+# Importacion del archivo principal
+import app_server as appServer
 # Importacion del cliente de AuthServer y helpers
 from src import authserver_client
 from src import helpers
@@ -302,9 +304,14 @@ class User(Resource):
     @helpers.limit_own_user_role
     def delete(self, username):
         try:
+            # Antes de borrar el usuario, borramos su registro
+            # de game progress
+            appServer.db.gameprogress.delete_one({
+                    "username": username
+            })
             resp_auth = authserver_client.\
-                        AuthAPIClient.\
-                        delete_user(username)
+                AuthAPIClient.\
+                delete_user(username)
             return resp_auth.json(), resp_auth.status_code
         except Exception as e:
             ResponseUsersDelete = {

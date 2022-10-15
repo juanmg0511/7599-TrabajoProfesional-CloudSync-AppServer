@@ -128,10 +128,20 @@ class RequestLogTestCase(TestCase):
 
     @mock.patch("src.authserver_client.requests.get")
     def test_post_valid_progress_should_return_created(self,
-                                                       mock_get_session):
-        mock_get_session.return_value = aux_functions.\
-                                        mockCheckSessionAdmin(
-                                            "testunituser_admin")
+                                                       mock_get):
+
+        mock_get.return_value = HTTPStatus.OK
+        mock_get.side_effect = [
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin"),
+            aux_functions.
+            mockCheckRelayUser(
+                "testunituser_post_1"),
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin")
+        ]
 
         r = self.app.post('/api/v1/gameprogress',
                           headers={'Content-Type': 'application/json',
@@ -164,10 +174,20 @@ class RequestLogTestCase(TestCase):
 
     @mock.patch("src.authserver_client.requests.get")
     def test_existing_post_existing_valid_progress_should_return_400(
-      self, mock_get_session):
-        mock_get_session.return_value = aux_functions.\
-                                        mockCheckSessionAdmin(
-                                            "testunituser_admin")
+      self, mock_get):
+
+        mock_get.return_value = HTTPStatus.OK
+        mock_get.side_effect = [
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin"),
+            aux_functions.
+            mockCheckRelayUser(
+                "testunituser_usr_existing_post"),
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin")
+        ]
 
         r = self.app.post('/api/v1/gameprogress',
                           headers={'Content-Type': 'application/json',
@@ -180,7 +200,7 @@ class RequestLogTestCase(TestCase):
                             gold_collected=5000
                           ))
         self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
-        self.assertEqual(-2, r.json["code"])
+        self.assertEqual(-3, r.json["code"])
 
     @mock.patch("src.authserver_client.requests.get")
     def test_get_id_progress_should_return_ok(self,
@@ -306,10 +326,20 @@ class RequestLogTestCase(TestCase):
 
     @mock.patch("src.authserver_client.requests.get")
     def test_put_new_progress_should_return_ok(self,
-                                               mock_get_session):
-        mock_get_session.return_value = aux_functions.\
-                                        mockCheckSessionAdmin(
-                                            "testunituser_admin")
+                                               mock_get):
+
+        mock_get.return_value = HTTPStatus.OK
+        mock_get.side_effect = [
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin"),
+            aux_functions.
+            mockCheckRelayUser(
+                "testunituser_usr_new"),
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin")
+        ]
 
         r = self.app.put('/api/v1/users/testunituser_usr_new/gameprogress',
                          headers={'Content-Type': 'application/json',
@@ -325,10 +355,20 @@ class RequestLogTestCase(TestCase):
 
     @mock.patch("src.authserver_client.requests.get")
     def test_put_valid_progress_should_return_ok(self,
-                                                 mock_get_session):
-        mock_get_session.return_value = aux_functions.\
-                                        mockCheckSessionAdmin(
-                                            "testunituser_admin")
+                                                 mock_get):
+
+        mock_get.return_value = HTTPStatus.OK
+        mock_get.side_effect = [
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin"),
+            aux_functions.
+            mockCheckRelayUser(
+                "testunituser_usr_put"),
+            aux_functions.
+            mockCheckSessionAdmin(
+                "testunituser_admin")
+        ]
 
         r = self.app.put('/api/v1/users/testunituser_usr_put/gameprogress',
                          headers={'Content-Type': 'application/json',

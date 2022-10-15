@@ -75,6 +75,32 @@ def mockCheckRelay(return_value):
     return my_mock_response
 
 
+def mockCheckRelayUser(username):
+
+    my_mock_response = mock.Mock(status_code=HTTPStatus.OK)
+    my_mock_response.json.return_value = {
+        "id": "62d443c6366edccbaa52cfec",
+        "username": username,
+        "first_name": "Damián",
+        "last_name": "Marquesín Fernandez",
+        "contact": {
+            "email": "a.fake@email.com",
+            "phone": "5555 5555"
+        },
+        "avatar": {
+            "isUrl": True,
+            "data": "http://www.google.com"
+        },
+        "login_service": False,
+        "online": False,
+        "account_closed": False,
+        "date_created": datetime.utcnow().isoformat(),
+        "date_updated": None
+    }
+
+    return my_mock_response
+
+
 # Simula la respuesta del AuthServer ante un pedido a un endpoint
 # privado de la API. Devuelve un objeto tipo usuario vacio, solo
 # con informacion de avatar

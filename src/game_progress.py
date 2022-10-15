@@ -206,17 +206,36 @@ class AllProgress(Resource):
 
         # Buscamos el usuario para el que se quiere crear el registro
         # en la base de datos del auth server
-        response = authserver_client.AuthAPIClient.get_user(username)
-        if (response.status_code == 404):
-            progressResponsePost = {
+        try:
+            response = authserver_client.AuthAPIClient.get_user(username)
+            if (response.json()["account_closed"] is True):
+                progressResponsePost = {
+                    "code": -2,
+                    "message": "User '" +
+                               username +
+                               "' account is closed.",
+                    "data": None
+                }
+                return helpers.return_request(progressResponsePost,
+                                              HTTPStatus.BAD_REQUEST)
+            if (response.status_code == 404):
+                progressResponsePost = {
+                    "code": -1,
+                    "message": "User '" +
+                               username +
+                               "' does not exist.",
+                    "data": None
+                }
+                return helpers.return_request(progressResponsePost,
+                                              HTTPStatus.NOT_FOUND)
+        except Exception as e:
+            ResponseAllAdminusersGet = {
                 "code": -1,
-                "message": "User '" +
-                           username +
-                           "' does not exist.",
+                "message": str(e),
                 "data": None
             }
-            return helpers.return_request(progressResponsePost,
-                                          HTTPStatus.NOT_FOUND)
+            return helpers.return_request(ResponseAllAdminusersGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
 
         try:
             existingGameProgress = appServer.db.gameprogress.find_one({
@@ -248,7 +267,7 @@ class AllProgress(Resource):
                                           HTTPStatus.CREATED)
         else:
             progressResponsePost = {
-                "code": -2,
+                "code": -3,
                 "message": "Game progress record for user '" +
                            username +
                            "' already exists.",
@@ -537,17 +556,36 @@ class UserProgress(Resource):
 
         # Buscamos el usuario para el que se quiere crear el registro
         # en la base de datos del auth server
-        response = authserver_client.AuthAPIClient.get_user(username)
-        if (response.status_code == 404):
-            progressResponsePost = {
+        try:
+            response = authserver_client.AuthAPIClient.get_user(username)
+            if (response.json()["account_closed"] is True):
+                progressResponsePost = {
+                    "code": -2,
+                    "message": "User '" +
+                               username +
+                               "' account is closed.",
+                    "data": None
+                }
+                return helpers.return_request(progressResponsePost,
+                                              HTTPStatus.BAD_REQUEST)
+            if (response.status_code == 404):
+                progressResponsePost = {
+                    "code": -1,
+                    "message": "User '" +
+                               username +
+                               "' does not exist.",
+                    "data": None
+                }
+                return helpers.return_request(progressResponsePost,
+                                              HTTPStatus.NOT_FOUND)
+        except Exception as e:
+            ResponseAllAdminusersGet = {
                 "code": -1,
-                "message": "User '" +
-                           username +
-                           "' does not exist.",
+                "message": str(e),
                 "data": None
             }
-            return helpers.return_request(progressResponsePost,
-                                          HTTPStatus.NOT_FOUND)
+            return helpers.return_request(ResponseAllAdminusersGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
 
         try:
             existingGameProgress = appServer.db.gameprogress.find_one(

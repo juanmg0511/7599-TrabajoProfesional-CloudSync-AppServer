@@ -75,6 +75,8 @@ def mockCheckRelay(return_value):
     return my_mock_response
 
 
+# Simula la respuesta del AuthServer ante un pedido de un usuario,
+# devolviendo el objeto completo
 def mockCheckRelayUser(username):
 
     my_mock_response = mock.Mock(status_code=HTTPStatus.OK)

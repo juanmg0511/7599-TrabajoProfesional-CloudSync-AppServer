@@ -158,6 +158,16 @@ class AuthAPIClient:
                             params=filters,
                             headers=AuthAPIClient.__headers())
 
+    @staticmethod
+    def delete_user_sessions(username):
+        return requests.delete(config.api_auth_client_url + "/" +
+                               config.api_auth_client_path + "/" +
+                               config.api_auth_client_version + "/" +
+                               "users" + "/" +
+                               username + "/" +
+                               "sessions",
+                               headers=AuthAPIClient.__headers())
+
     ###########################################################################
     # Metodos para endpoint 'adminusers' del AuthServer
     ###########################################################################
@@ -228,6 +238,16 @@ class AuthAPIClient:
                             params=filters,
                             headers=AuthAPIClient.__headers())
 
+    @staticmethod
+    def delete_adminuser_sessions(username):
+        return requests.delete(config.api_auth_client_url + "/" +
+                               config.api_auth_client_path + "/" +
+                               config.api_auth_client_version + "/" +
+                               "adminusers" + "/" +
+                               username + "/" +
+                               "sessions",
+                               headers=AuthAPIClient.__headers())
+
     ###########################################################################
     # Metodos para endpoint 'recovery' del AuthServer
     ###########################################################################
@@ -249,6 +269,15 @@ class AuthAPIClient:
                             "recovery" + "/" +
                             username,
                             headers=AuthAPIClient.__headers())
+
+    @staticmethod
+    def delete_recovery(username):
+        return requests.delete(config.api_auth_client_url + "/" +
+                               config.api_auth_client_path + "/" +
+                               config.api_auth_client_version + "/" +
+                               "recovery" + "/" +
+                               username,
+                               headers=AuthAPIClient.__headers())
 
     @staticmethod
     def post_recovery_request(data):

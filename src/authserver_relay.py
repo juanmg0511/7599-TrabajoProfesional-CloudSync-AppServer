@@ -163,6 +163,7 @@ class AdminUser(Resource):
 
 # Clase que define el endpoint para obtener las sesiones de un usuario admin
 # verbo GET - obtener sesiones vigentes del usuario admin
+# verbo DELETE - cerrar todas las sesiones del usuario
 class AdminUserSessions(Resource):
 
     # verbo GET - obtener sesiones vigentes del usuario admin
@@ -182,6 +183,25 @@ class AdminUserSessions(Resource):
                 "data": None
             }
             return helpers.return_request(ResponseAdminusersGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+    # verbo DELETE - cerrar todas las sesiones del usuario
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def delete(self, username):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       delete_adminuser_sessions(username)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseUserSessionsGet = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseUserSessionsGet,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
 
 
@@ -383,6 +403,7 @@ class UserExists(Resource):
 
 # Clase que define el endpoint para obtener las sesiones de un usuario
 # verbo GET - obtener sesiones vigentes del usuario
+# verbo DELETE - cerrar todas las sesiones del usuario
 class UserSessions(Resource):
 
     # verbo GET - obtener sesiones vigentes del usuario
@@ -394,6 +415,25 @@ class UserSessions(Resource):
             response = authserver_client.\
                        AuthAPIClient.\
                        get_user_sessions(username, request.args)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseUserSessionsGet = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseUserSessionsGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+    # verbo DELETE - cerrar todas las sesiones del usuario
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def delete(self, username):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       delete_user_sessions(username)
             return response.json(), response.status_code
         except Exception as e:
             ResponseUserSessionsGet = {
@@ -571,6 +611,8 @@ class AllRecovery(Resource):
 # verbo GET - recuperar un pedido especifico de recupero de contraseña
 # verbo POST - cambia la password del usuario, y borra el pedido de
 # recuperacion de contraseña, si los datos coinciden
+# verbo DELETE - borra el pedido de recuperacion de contraseña de
+# un usuario
 class Recovery(Resource):
 
     # verbo GET - recuperar un pedido especifico de recupero de contraseña
@@ -609,6 +651,26 @@ class Recovery(Resource):
                 "data": None
             }
             return helpers.return_request(ResponseRecoveryPost,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)
+
+    # verbo DELETE - borra el pedido de recuperacion de contraseña de
+    # un usuario
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def delete(self, username):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       delete_recovery(username)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseRecoveryGet = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseRecoveryGet,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
 
 

@@ -42,6 +42,8 @@ app_port_default = 8000
 # Para todos los modos
 app_env_default = "DEV"
 page_max_size_default = 100
+prune_interval_stats_seconds_default = 86400
+stats_days_to_keep_default = 30
 api_auth_client_id_default = "44dd22ca-836d-40b6-aa49-7981ded03667"
 api_auth_client_url_default = "http://127.0.0.1:81"
 api_auth_client_path_default = "api"
@@ -81,6 +83,17 @@ username_max_length = os.environ.get("USERNAME_MAX_LENGTH",
 # Lectura del tamanio maximo de pagina para la devolucion de resultados
 page_max_size = os.environ.get("PAGE_MAX_SIZE",
                                page_max_size_default)
+
+
+# Lectura del intervalo de limpieza de recovery, en segundos
+prune_interval_stats = \
+    os.environ.get("PRUNE_INTERVAL_STATS_SECONDS",
+                   prune_interval_stats_seconds_default)
+
+
+# Lectura de la cantidad de dias que deben mantenerse los stats
+stats_days_to_keep = os.environ.get("STATS_DAYS_TO_KEEP",
+                                    stats_days_to_keep_default)
 
 
 # Lectura de la API KEY utilizada por el AuthServer

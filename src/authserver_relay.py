@@ -699,3 +699,30 @@ class AuthRequestLog(Resource):
             }
             return helpers.return_request(ResponseRequestLogGet,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
+
+
+###############################################################################
+# Metodos para endpoint 'requestlog' del AuthServer
+###############################################################################
+
+# Clase que entrega estadisticas del uso del servidor
+class AuthStats(Resource):
+
+    # verbo GET - obtener registros de estadisticas
+    @helpers.log_reqId
+    @helpers.check_token
+    @helpers.deny_user_role
+    def get(self):
+        try:
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       get_stats(request.args)
+            return response.json(), response.status_code
+        except Exception as e:
+            ResponseStatsGet = {
+                "code": -1,
+                "message": str(e),
+                "data": None
+            }
+            return helpers.return_request(ResponseStatsGet,
+                                          HTTPStatus.SERVICE_UNAVAILABLE)

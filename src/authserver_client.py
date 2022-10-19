@@ -308,3 +308,15 @@ class AuthAPIClient:
                             "requestlog",
                             params=filters,
                             headers=AuthAPIClient.__headers())
+
+    ###########################################################################
+    # Metodos para endpoint 'stats' del AuthServer
+    ###########################################################################
+    @staticmethod
+    def get_stats(filters):
+        return requests.get(config.api_auth_client_url + "/" +
+                            config.api_auth_client_path + "/" +
+                            config.api_auth_client_version + "/" +
+                            "stats",
+                            params=filters,
+                            headers=AuthAPIClient.__headers())

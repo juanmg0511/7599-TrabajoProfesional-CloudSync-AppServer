@@ -8,10 +8,9 @@
 
 # Importacion de librerias necesarias
 # OS para leer variables de entorno y logging para escribir los logs
-import sys
 import uuid
 import re
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 # Flask, para la implementacion del servidor REST
 from flask import g
 from flask import request
@@ -252,6 +251,54 @@ def config_log():
                               str(config.api_auth_client_version) +
                               "\".")
 
+    appServer.app.logger.info("Prune interval for stats is: " +
+                              str(config.prune_interval_stats) +
+                              " seconds.")
+    appServer.app.logger.info("Time period to keep stats is: " +
+                              str(config.stats_days_to_keep) +
+                              " days.")
+    return 0
+
+
+# Funcion que limpia la collection de stats de registros viejos
+def prune_stats():
+
+    # Comienzo del proceso
+    appServer.app.logger.info("prune_stats: starting...")
+
+    # Limpieza de stats
+    limitDate = date.today() - timedelta(days=int(config.stats_days_to_keep))
+    try:
+        result = appServer.db.stats.delete_many({
+            "date": {"$lt": str(limitDate)}
+        })
+        statsDeleted = result.deleted_count
+
+    except Exception as e:
+        return handleDatabasebError(e)
+
+    appServer.app.logger.info("prune_stats: deleted " +
+                              str(statsDeleted) +
+                              " expired stats records.")
+
+    # Fin del proceso
+    appServer.app.logger.info("prune_stats: done.")
+
+    # Armamos el documento a guardar en la base de datos
+    pruneLog = {
+        "log_type": "task",
+        "request_date": datetime.utcnow().isoformat(),
+        "task_type": "prune old stats records",
+        "api_version": "v" + config.api_version,
+        "pruned_stats": statsDeleted
+    }
+    try:
+        appServer.db.requestlog.insert_one(pruneLog)
+    except Exception as e:
+        return handleDatabasebError(e)
+    appServer.app.logger.debug('Prune expired stat records: ' +
+                               'task data successfully logged to DB.')
+
     return 0
 
 
@@ -318,181 +365,3 @@ def non_empty_and_safe_filter_username(u):
 # formateado para el log default de Gunicorn
 def log_request_id():
     return "[" + str(current_request_id()) + "] "
-
-
-# Funcion que calcula las estadisticas de uso del servidor
-def gatherStats(startdate, enddate, sort_ascending):
-
-    # Calculamos numero de dias pedidos
-    number_days = abs((enddate - startdate).days) + 1
-
-    dailyStats = []
-    for day in range(number_days):
-        if (sort_ascending is True):
-            date = startdate + timedelta(days=day)
-        else:
-            date = enddate - timedelta(days=day)
-
-        # Calculos sobre requests
-        requests_number = 0
-        requests_highscores = 0
-        requests_game_progress = 0
-        requests_auth_api = 0
-        requests_error_400 = 0
-        requests_error_401 = 0
-        requests_error_404 = 0
-        requests_error_405 = 0
-        requests_error_500 = 0
-        requests_error_503 = 0
-        # Calculos sobre requests
-        response_time_max = 0
-        response_time_min = sys.float_info.max
-        # Calculos sobre datos
-        requests_highscores_post = 0
-        requests_highscores_delete = 0
-        requests_game_progress_post = 0
-        requests_game_progress_delete = 0
-
-        # Tomamos los requests del dia, y hacemos los calculos
-        try:
-            day_requests = appServer.\
-                db.\
-                requestlog.\
-                find({"$and": [{"request_date": {"$regex": str(date.date())}},
-                     {"log_type": "request"}]})
-        except Exception as e:
-            return handleDatabasebError(e)
-        while True:
-            try:
-                record = day_requests.next()
-            except StopIteration:
-                break
-
-            requests_number += 1
-
-            if (float(record["duration"]) < response_time_min):
-                response_time_min = float(record["duration"])
-            if (float(record["duration"]) > response_time_max):
-                response_time_max = float(record["duration"])
-
-            if ("/highscores" in record["path"]):
-                requests_highscores += 1
-                if (("POST" in record["method"])
-                   and (str(HTTPStatus.CREATED.value)
-                   in str(record["status"]))):
-                    requests_highscores_post += 1
-                if (("DELETE" in record["method"])
-                   and (str(HTTPStatus.OK.value) in str(record["status"]))):
-                    requests_highscores_delete += 1
-
-            if ("/gameprogress" in record["path"]):
-                requests_game_progress += 1
-                if (("POST" in record["method"])
-                   and (str(HTTPStatus.CREATED.value
-                        or str(HTTPStatus.CREATED.value))
-                   in str(record["status"]))):
-                    requests_game_progress_post += 1
-                if (("DELETE" in record["method"])
-                   and (str(HTTPStatus.OK.value) in str(record["status"]))):
-                    requests_game_progress_delete += 1
-
-            if (("/users" in record["path"])
-               or ("/adminusers" in record["path"])
-               or ("/sessions" in record["path"])
-               or ("/recovery" in record["path"])):
-                requests_auth_api += 1
-
-            if (str(HTTPStatus.BAD_REQUEST.value) in str(record["status"])):
-                requests_error_400 += 1
-
-            if (str(HTTPStatus.UNAUTHORIZED.value) in str(record["status"])):
-                requests_error_401 += 1
-
-            if (str(HTTPStatus.NOT_FOUND.value) in str(record["status"])):
-                requests_error_404 += 1
-
-            if (str(HTTPStatus.METHOD_NOT_ALLOWED.value)
-               in str(record["status"])):
-                requests_error_405 += 1
-
-            if (str(HTTPStatus.INTERNAL_SERVER_ERROR.value)
-               in str(record["status"])):
-                requests_error_500 += 1
-
-            if (str(HTTPStatus.SERVICE_UNAVAILABLE.value)
-               in str(record["status"])):
-                requests_error_503 += 1
-
-        if (requests_number == 0):
-            response_time_min = 0
-            endpoint_most_requests = None
-        else:
-            requests = {requests_highscores: "/highscores",
-                        requests_game_progress: "/gameprogress"}
-            endpoint_most_requests = str(requests.get(max(requests)))
-
-        # Registro a devolver en la respuesta, para cada dia
-        stat = {
-            # fecha
-            "date": str(date.date()),
-            # cant requests en el dia
-            "requests_number": str(requests_number),
-            # hits endpoint users
-            # hits endpoint adminusers
-            # hits endpoint sessions
-            # hits endpoint recovery
-            # requests por minuto para el dia
-            "requests_highscores": str(requests_highscores),
-            "requests_game_progress": str(requests_game_progress),
-            "requests_auth_api": str(requests_auth_api),
-            "requests_per_minute": str(float("{:.4f}".
-                                       format(requests_number/1440))),
-            "endpoint_most_requests": endpoint_most_requests,
-            # tiempo de respuesta maximo
-            # tiempo de respuesta minimo
-            # tiempo de respuesta promedio
-            "response_time_max": str(float("{:.4f}".
-                                     format(response_time_max))),
-            "response_time_min": str(float("{:.4f}".
-                                     format(response_time_min))),
-            "response_time_avg":  str(float("{:.4f}".
-                                      format((response_time_max +
-                                              response_time_min)/2))),
-            # cantidad de usuarios nuevos
-            # cantidad de usuario dados de baja
-            # cantidad de sesiones abiertas
-            # cantidad de sesiones cerradas
-            # cantidad recovery abiertos
-            "highscores_new": str(requests_highscores_post),
-            "highscores_deleted": str(requests_highscores_delete),
-            "game_progress_saved": str(requests_game_progress_post),
-            "game_progress_deleted": str(requests_game_progress_delete),
-            # errores 500
-            "requests_error_400": str(requests_error_400),
-            "requests_error_401": str(requests_error_401),
-            "requests_error_404": str(requests_error_404),
-            "requests_error_405": str(requests_error_405),
-            "requests_error_500": str(requests_error_500),
-            "requests_error_503": str(requests_error_503)
-        }
-        dailyStats.append(stat)
-
-    # Respuesta de estadisticas, incluye estadisticas generales
-    # y la lista de dias
-    try:
-        statsResult = {
-                "request_date:":
-                datetime.utcnow().isoformat(),
-                "requested_days":
-                number_days,
-                "registered_higshscores":
-                appServer.db.highscores.count_documents({}),
-                "registered_game_progress":
-                appServer.db.gameprogress.count_documents({}),
-                "daily_stats":
-                dailyStats
-            }
-    except Exception as e:
-        return handleDatabasebError(e)
-
-    return statsResult

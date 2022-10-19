@@ -9,6 +9,7 @@
 # Importacion de librerias necesarias
 # Logging para escribir los logs
 import logging
+import atexit
 # Flask, para la implementacion del servidor REST
 from flask import Flask
 from flask import g
@@ -19,12 +20,14 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 # Flask-Talisman para el manejo de SSL
 from flask_talisman import Talisman
+# Flask-APScheduler para el prune de la collection de stats
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Importacion de las configuracion del App Server
 import app_server_config as config
 # Importacion de clases necesarias
 from src import home, authserver_relay, game_progress, high_scores,\
-                requestlog, helpers
+                requestlog, stats, helpers
 
 # Inicializacion de la api
 app = Flask(__name__)
@@ -79,6 +82,30 @@ def on_starting(server):
     # Logueo de los valores configurados mediante variables de entorno
     helpers.config_log()
 
+    # Hacemos limpieza de stats al iniciar el servidor,
+    # independientemente de la configuracion scheduleada
+    helpers.prune_stats()
+
+    # Inicializacion del scheduler utilizado para limpiar la collection
+    # de stats viejas
+    app.logger.debug("Configuring BackgroundScheduler for Gunicorn.")
+    global scheduler
+    scheduler = BackgroundScheduler(timezone="UTC", daemon=True)
+
+    # Limpia la tabla de recoveries vencidas
+    # Frecuencia PRUNE_INTERVAL_STATS_SECONDS
+    app.logger.debug("Configuring stats prune job, interval " +
+                     str(config.prune_interval_stats) + " seconds.")
+    scheduler.add_job(func=helpers.prune_stats,
+                      coalesce=True, max_instances=1,
+                      trigger="interval",
+                      seconds=int(config.prune_interval_stats),
+                      id="auth_server_prune_stats",
+                      replace_existing=True)
+
+    scheduler.start()
+    atexit.register(lambda: scheduler.shutdown())
+
 
 # Request log, inicializacion de los decorators
 # Llamada antes de cada request
@@ -111,6 +138,7 @@ def after_request(response):
     app.logger.debug(helpers.log_request_id() +
                      'Excecuting after request actions.')
     requestlog.log_request(response)
+    stats.update_stats(response)
     response.headers.add('X-Request-ID', g.request_id)
 
     return response
@@ -119,10 +147,6 @@ def after_request(response):
 # Defincion de los endpoints del server
 api.add_resource(home.Home,
                  "/")
-api.add_resource(home.Ping,
-                 "/ping")
-api.add_resource(home.Stats,
-                 "/stats")
 api.add_resource(home.Status,
                  "/status")
 api.add_resource(authserver_relay.AllAdminUsers,
@@ -165,6 +189,11 @@ api.add_resource(high_scores.AllHighScores,
                  config.api_path + "/highscores")
 api.add_resource(high_scores.HighScores,
                  config.api_path + "/highscores/<string:id>")
+api.add_resource(authserver_relay.AuthStats,
+                 config.api_path + "/statsauthserver")
+api.add_resource(stats.Stats,
+                 config.api_path + "/stats")
+
 
 # Wrappeamos con Talisman a la aplicacion Flask
 # Solo permitimos http para el ambiente de desarrollo

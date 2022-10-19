@@ -450,6 +450,44 @@ class RequestLogTestCase(TestCase):
         self.assertEqual(HTTPStatus.OK, r.status_code)
 
     @mock.patch("src.authserver_client.requests.get")
+    @mock.patch("src.authserver_client.requests.delete")
+    @mock.patch("src.authserver_client.requests.get")
+    def test_delete_user_sessions_should_return_ok(self,
+                                                   mock_get_session,
+                                                   mock_relay,
+                                                   mock_get_session_2):
+
+        mock_get_session.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+        mock_relay.return_value = aux_functions.\
+            mockCheckRelay(HTTPStatus.OK)
+        mock_get_session_2.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+
+        r = self.app.delete('/api/v1/users/fake-user/sessions',
+                            headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
+    @mock.patch("src.authserver_client.requests.delete")
+    @mock.patch("src.authserver_client.requests.get")
+    def test_delete_adminuser_sessions_should_return_ok(self,
+                                                        mock_get_session,
+                                                        mock_relay,
+                                                        mock_get_session_2):
+
+        mock_get_session.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+        mock_relay.return_value = aux_functions.\
+            mockCheckRelay(HTTPStatus.OK)
+        mock_get_session_2.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+
+        r = self.app.delete('/api/v1/adminusers/fake-user/sessions',
+                            headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
     def test_get_all_recovery_should_return_ok(self,
                                                mock_get):
 
@@ -501,6 +539,29 @@ class RequestLogTestCase(TestCase):
                             any_payload=1,
                             response_is_mocked=1
                           ))
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
+    @mock.patch("src.authserver_client.requests.delete")
+    @mock.patch("src.authserver_client.requests.get")
+    def test_delete_recovery_should_return_ok(self,
+                                              mock_get_session,
+                                              mock_relay,
+                                              mock_get_session_2):
+
+        mock_get_session.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+        mock_relay.return_value = aux_functions.\
+            mockCheckRelay(HTTPStatus.OK)
+        mock_get_session_2.return_value = aux_functions.\
+            mockCheckSessionAdmin("testunituser_admin")
+
+        r = self.app.delete('/api/v1/recovery/mock-key',
+                            headers={'X-Auth-Token': 'AuthServer is mocked'},
+                            json=dict(
+                              any_payload=1,
+                              response_is_mocked=1
+                            ))
         self.assertEqual(HTTPStatus.OK, r.status_code)
 
     @mock.patch("src.authserver_client.requests.get")

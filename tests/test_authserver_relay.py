@@ -515,6 +515,18 @@ class RequestLogTestCase(TestCase):
                          headers={'X-Auth-Token': 'AuthServer is mocked'})
         self.assertEqual(HTTPStatus.OK, r.status_code)
 
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_auth_stats_should_return_ok(self,
+                                             mock_get):
+
+        mock_get.side_effect = [
+            aux_functions.mockCheckSessionAdmin("testunituser_admin"),
+            aux_functions.mockCheckRelay(HTTPStatus.OK)]
+
+        r = self.app.get('/api/v1/statsauthserver',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
 
 if __name__ == '__main__':
     unittest.main()

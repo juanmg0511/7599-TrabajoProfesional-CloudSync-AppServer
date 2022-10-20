@@ -28,27 +28,6 @@
 					"response": []
 				},
 				{
-					"name": "Ping",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://127.0.0.1/ping",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"path": [
-								"ping"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Status",
 					"request": {
 						"method": "GET",
@@ -64,41 +43,6 @@
 							],
 							"path": [
 								"status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Stats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://127.0.0.1/stats?startdate=2022-05-30&enddate=2022-06-03&sort_ascending=false",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"path": [
-								"stats"
-							],
-							"query": [
-								{
-									"key": "startdate",
-									"value": "2022-05-30"
-								},
-								{
-									"key": "enddate",
-									"value": "2022-06-03"
-								},
-								{
-									"key": "sort_ascending",
-									"value": "false"
-								}
 							]
 						}
 					},
@@ -126,7 +70,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/adminusers?start=0&limit=0&show_closed=true",
+							"raw": "http://127.0.0.1/api/v1/adminusers?start=0&limit=0&show_closed=true&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -151,6 +95,19 @@
 								{
 									"key": "show_closed",
 									"value": "true"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -209,7 +166,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/adminusers/admin2/sessions?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/adminusers/admin1/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -221,7 +178,7 @@
 								"api",
 								"v1",
 								"adminusers",
-								"admin2",
+								"admin1",
 								"sessions"
 							],
 							"query": [
@@ -232,6 +189,14 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -412,6 +377,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete an Admin User's sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/adminusers/cloudsyncgod/sessions",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"adminusers",
+								"cloudsyncgod",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -435,7 +439,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/users?start=0&limit=0&show_closed=true",
+							"raw": "http://127.0.0.1/api/v1/users?start=0&limit=0&show_closed=true&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -460,6 +464,19 @@
 								{
 									"key": "show_closed",
 									"value": "true"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -590,7 +607,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/users/juan0511/sessions?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/users/juan0511/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -613,6 +630,106 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List a User's game progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/users/juan0511/gameprogress",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List a User's highscores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/users/juan0511/highscores?start=0&limit=0&sort_column=username&sort_order=-1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"highscores"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -706,6 +823,52 @@
 					"response": []
 				},
 				{
+					"name": "New High Score for User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"achieved_level\": 12,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/users/juan0511/highscores",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"highscores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update User",
 					"request": {
 						"method": "PUT",
@@ -744,6 +907,51 @@
 								"v1",
 								"users",
 								"dmf15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create/update Game Progress for User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"next_level\": 4,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/users/juan0511/gameprogress",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
 							]
 						}
 					},
@@ -880,6 +1088,135 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete a User's sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/users/juan0511/sessions",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a User's game progress",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/users/juan0511/gameprogress",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a User's highscores",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/users/juan0511/highscores",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"highscores"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -903,7 +1240,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/sessions?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -924,6 +1261,19 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -957,7 +1307,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin2\",\n    \"password\": \"123456\"\n}\n",
+							"raw": "{\n    \"username\": \"cloudsyncgod\",\n    \"password\": \"Ais!rTFC23X$%scd3&/\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1129,6 +1479,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete all sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/sessions",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1152,7 +1539,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/recovery?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/recovery?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1173,6 +1560,19 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -1291,30 +1691,20 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Request Log",
-			"item": [
+				},
 				{
-					"name": "View Request",
+					"name": "Delete a user's password recovery request",
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/requestlog?startdate=2022-05-25&enddate=2022-05-30&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"cfd42239-74f0-47af-bdff-b48e32ab9746\"}",
+							"raw": "http://127.0.0.1:80/api/v1/recovery/juan0511",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1322,76 +1712,18 @@
 								"0",
 								"1"
 							],
+							"port": "80",
 							"path": [
 								"api",
 								"v1",
-								"requestlog"
+								"recovery",
+								"juan0511"
 							],
 							"query": [
 								{
-									"key": "startdate",
-									"value": "2022-05-25"
-								},
-								{
-									"key": "enddate",
-									"value": "2022-05-30"
-								},
-								{
-									"key": "filter",
-									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"cfd42239-74f0-47af-bdff-b48e32ab9746\"}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Request Log AuthServer",
-			"item": [
-				{
-					"name": "View Request",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Username",
-								"value": "{{X-Auth-Username}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://127.0.0.1/api/v1/requestlogauthserver?startdate=2022-06-20&enddate=2022-06-20&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"44e566ef-d762-488a-b6ab-d22663b4a4a9\"}",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"path": [
-								"api",
-								"v1",
-								"requestlogauthserver"
-							],
-							"query": [
-								{
-									"key": "startdate",
-									"value": "2022-06-20"
-								},
-								{
-									"key": "enddate",
-									"value": "2022-06-20"
-								},
-								{
-									"key": "filter",
-									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"44e566ef-d762-488a-b6ab-d22663b4a4a9\"}"
+									"key": "token",
+									"value": "",
+									"disabled": true
 								}
 							]
 						}
@@ -1420,7 +1752,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/gameprogress?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/gameprogress?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1441,6 +1773,19 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -1448,7 +1793,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Game Progress for User",
+					"name": "Get Game Progress Record",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1464,7 +1809,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"raw": "http://127.0.0.1/api/v1/gameprogress/6341c2b4d89fd076f54e67a8",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1476,14 +1821,58 @@
 								"api",
 								"v1",
 								"gameprogress",
-								"juan0511"
+								"6341c2b4d89fd076f54e67a8"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Create/Update Game Progress for User",
+					"name": "New Game Progress Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"next_level\": 4,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/gameprogress",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Game Progress Record",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -1500,7 +1889,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"next_level\": 5,\n    \"difficulty_level\": 5\n}\n",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"next_level\": 4,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1508,7 +1897,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"raw": "http://127.0.0.1/api/v1/gameprogress/6341c3e51f59e4dc504e67af",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1520,14 +1909,14 @@
 								"api",
 								"v1",
 								"gameprogress",
-								"juan0511"
+								"6341c3e51f59e4dc504e67af"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete Game Progress for User",
+					"name": "Delete Game Progress Record",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -1552,7 +1941,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/gameprogress/juan0511",
+							"raw": "http://127.0.0.1/api/v1/gameprogress/6341c3e51f59e4dc504e67af",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1564,7 +1953,7 @@
 								"api",
 								"v1",
 								"gameprogress",
-								"juan0511"
+								"6341c3e51f59e4dc504e67af"
 							]
 						}
 					},
@@ -1592,7 +1981,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/highscores?start=0&limit=0",
+							"raw": "http://127.0.0.1/api/v1/highscores?start=0&limit=0&user_filter=juan0511&sort_column=username&sort_order=-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1613,6 +2002,18 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -1620,7 +2021,7 @@
 					"response": []
 				},
 				{
-					"name": "Get High Scores for User",
+					"name": "Get High Score Record",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1636,7 +2037,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/highscores/juan0511",
+							"raw": "http://127.0.0.1/api/v1/highscores/6341b0725aef8dce03cca0ee",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1648,14 +2049,14 @@
 								"api",
 								"v1",
 								"highscores",
-								"juan0511"
+								"6341b0725aef8dce03cca0ee"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "New High Score for User",
+					"name": "New High Score Record",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1672,7 +2073,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 2,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 12,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1680,7 +2081,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/highscores",
+							"raw": "http://127.0.0.1:80/api/v1/highscores",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1688,6 +2089,7 @@
 								"0",
 								"1"
 							],
+							"port": "80",
 							"path": [
 								"api",
 								"v1",
@@ -1698,7 +2100,52 @@
 					"response": []
 				},
 				{
-					"name": "Delete High Scores for User",
+					"name": "Update High Score Record",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 12,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:80/api/v1/highscores/6340b26dae5ef818ebabc73b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "80",
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"6340b26dae5ef818ebabc73b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete High Score Record",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -1723,7 +2170,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1/api/v1/highscores/juan0511",
+							"raw": "http://127.0.0.1/api/v1/highscores/6340b26dae5ef818ebabc73b",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1735,7 +2182,195 @@
 								"api",
 								"v1",
 								"highscores",
-								"juan0511"
+								"6340b26dae5ef818ebabc73b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request Log",
+			"item": [
+				{
+					"name": "Request Log",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/requestlog?startdate=2022-05-25&enddate=2022-05-30",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"requestlog"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-05-25"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-05-30"
+								},
+								{
+									"key": "filter",
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"cfd42239-74f0-47af-bdff-b48e32ab9746\"}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Log AuthServer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/requestlogauthserver?startdate=2022-06-20&enddate=2022-06-20",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"requestlogauthserver"
+							],
+							"query": [
+								{
+									"key": "startdate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "enddate",
+									"value": "2022-06-20"
+								},
+								{
+									"key": "filter",
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"44e566ef-d762-488a-b6ab-d22663b4a4a9\"}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stats",
+			"item": [
+				{
+					"name": "Request Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/stats?sort_ascending=false",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "sort_ascending",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Stats AuthServer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/api/v1/statsauthserver?sort_ascending=false",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"api",
+								"v1",
+								"statsauthserver"
+							],
+							"query": [
+								{
+									"key": "sort_ascending",
+									"value": "false"
+								}
 							]
 						}
 					},

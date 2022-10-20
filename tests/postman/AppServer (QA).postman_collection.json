@@ -30,26 +30,6 @@
 					"response": []
 				},
 				{
-					"name": "Ping",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/ping",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"ping"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Status",
 					"request": {
 						"method": "GET",
@@ -64,40 +44,6 @@
 							],
 							"path": [
 								"status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Stats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/stats?startdate=2022-06-01&enddate=2022-06-05&sort_ascending=false",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"stats"
-							],
-							"query": [
-								{
-									"key": "startdate",
-									"value": "2022-06-01"
-								},
-								{
-									"key": "enddate",
-									"value": "2022-06-05"
-								},
-								{
-									"key": "sort_ascending",
-									"value": "false"
-								}
 							]
 						}
 					},
@@ -120,7 +66,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers?start=0&limit=0&show_closed=true",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers?start=0&limit=0&show_closed=true&sort_column=username&sort_order=-1",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -144,6 +90,19 @@
 								{
 									"key": "show_closed",
 									"value": "true"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -191,7 +150,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod/sessions?start=0&limit=0",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/cloudsyncgod/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -213,6 +172,14 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -369,6 +336,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete an Admin User's sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/adminusers/admin1/sessions",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"adminusers",
+								"admin1",
+								"sessions"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -387,7 +393,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users?start=0&limit=0&show_closed=true",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users?start=0&limit=0&show_closed=true&sort_column=username&sort_order=-1",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -411,6 +417,19 @@
 								{
 									"key": "show_closed",
 									"value": "true"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -552,6 +571,84 @@
 					"response": []
 				},
 				{
+					"name": "List a User's game progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/gameprogress",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List a User's highscores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "New User (user & password)",
 					"request": {
 						"method": "POST",
@@ -626,6 +723,45 @@
 					"response": []
 				},
 				{
+					"name": "New High Score Record for User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"achieved_level\": 2,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/highscores",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"highscores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update User",
 					"request": {
 						"method": "PUT",
@@ -658,6 +794,45 @@
 								"v1",
 								"users",
 								"dmf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create/Update Game Progress Record for User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"next_level\": 5,\n    \"difficulty_level\": 5,\n    \"gold_collected\": 5000,\n    \"time_elapsed\": \"20:10:40.045\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/gameprogress",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
 							]
 						}
 					},
@@ -776,6 +951,123 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete a User's sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/sessions",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a User's game progress",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/gameprogress",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a User's highscores",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/users/juan0511/highscores",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"juan0511",
+								"highscores"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -794,7 +1086,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions?start=0&limit=0",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/sessions?start=0&limit=0&sort_column=username&sort_order=-1",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -814,6 +1106,19 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
 								}
 							]
 						}
@@ -892,7 +1197,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"juan0511\",\n    \"password\": \"123456\"\n}\n",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"password\": \"Asdfghjk1!\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1004,6 +1309,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete all sessions (logout)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Client-ID",
+								"value": "11150657-b3c0-4d0a-9f03-76f41ee198de",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-auth-server.herokuapp.com/api/v1/sessions?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjYyNzU5NDAsIm5iZiI6MTY2NjI3NTk0MCwianRpIjoiNzZlYmJkZDYtZGNmNC00YWQ2LWJlYWEtNTk4YThlMTBkOWRhIiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.DtFh_-Oj4mgzAiXx2DqCu3WZeIbmCnaFKQVCvdABo4g",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-auth-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjYyNzU5NDAsIm5iZiI6MTY2NjI3NTk0MCwianRpIjoiNzZlYmJkZDYtZGNmNC00YWQ2LWJlYWEtNTk4YThlMTBkOWRhIiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.DtFh_-Oj4mgzAiXx2DqCu3WZeIbmCnaFKQVCvdABo4g"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1022,7 +1361,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery?start=0&limit=0",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery?start=0&limit=0&sort_column=username&sort_order=1",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -1042,6 +1381,19 @@
 								{
 									"key": "limit",
 									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "1"
 								}
 							]
 						}
@@ -1093,7 +1445,7 @@
 					"response": []
 				},
 				{
-					"name": "List a user's password recovery requests",
+					"name": "List a user's password recovery request",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1152,6 +1504,445 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete a user's password recovery request",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recovery_key\": \"{{Pwd-Recovery-Key}}\",\n    \"new_password\": \"123456\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/recovery/juan0511",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recovery",
+								"juan0511"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Game Progress",
+			"item": [
+				{
+					"name": "List all Game Progress Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress?start=0&limit=0&sort_column=username&sort_order=-1",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Game Progress Record",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/634049f30c0cc24bd6dac736",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"634049f30c0cc24bd6dac736"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Game Progress Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"next_level\": 5,\n    \"difficulty_level\": 5,\n    \"gold_collected\": 5000,\n    \"time_elapsed\": \"20:10:40.045\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Game Progress Record",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"next_level\": 5,\n    \"difficulty_level\": 5,\n    \"gold_collected\": 5000,\n    \"time_elapsed\": \"20:10:40.045\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/633b7e0fbc3870d368e1d1ea",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"633b7e0fbc3870d368e1d1ea"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Game Progress Record",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/634049f30c0cc24bd6dac736",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"gameprogress",
+								"634049f30c0cc24bd6dac736"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "High Scores",
+			"item": [
+				{
+					"name": "List all High Scores Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores?start=0&limit=0&sort_column=username&sort_order=-1",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "0"
+								},
+								{
+									"key": "user_filter",
+									"value": "juan0511",
+									"disabled": true
+								},
+								{
+									"key": "sort_column",
+									"value": "username"
+								},
+								{
+									"key": "sort_order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get High Score Record",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/63443ac424b3231d73e6bc17",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"63443ac424b3231d73e6bc17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New High Score Record",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 2,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update High Score Record",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 9,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5002,\n    \"high_score\": 1000000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/633b9557bc3870d368e1d24d",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"633b9557bc3870d368e1d24d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete High Score Record",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Auth-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/63443ac424b3231d73e6bc17",
+							"protocol": "https",
+							"host": [
+								"fiuba-qa-7599-cs-app-server",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"highscores",
+								"63443ac424b3231d73e6bc17"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1159,7 +1950,7 @@
 			"name": "Request Log",
 			"item": [
 				{
-					"name": "View Request",
+					"name": "Request Log",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1199,14 +1990,9 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Request Log AuthServer",
-			"item": [
+				},
 				{
-					"name": "View Request",
+					"name": "Request Log AuthServer",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1222,7 +2008,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/requestlogauthserver?startdate=2022-06-20&enddate=2022-06-20&filter={\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"87f9c44b-681c-496d-bc12-4ee25d9f93f7\"}",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/requestlogauthserver?startdate=2022-10-01&enddate=2022-10-01",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -1237,15 +2023,16 @@
 							"query": [
 								{
 									"key": "startdate",
-									"value": "2022-06-20"
+									"value": "2022-10-01"
 								},
 								{
 									"key": "enddate",
-									"value": "2022-06-20"
+									"value": "2022-10-01"
 								},
 								{
 									"key": "filter",
-									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"87f9c44b-681c-496d-bc12-4ee25d9f93f7\"}"
+									"value": "{\"comparator\": \"eq\",\"field\": \"request_id\",\"value\": \"87f9c44b-681c-496d-bc12-4ee25d9f93f7\"}",
+									"disabled": true
 								}
 							]
 						}
@@ -1255,10 +2042,10 @@
 			]
 		},
 		{
-			"name": "Game Progress",
+			"name": "Stats",
 			"item": [
 				{
-					"name": "List all Game Progress Records",
+					"name": "Request Stats",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1266,10 +2053,15 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
+							},
+							{
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress?start=0&limit=0",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/stats?sort_ascending=false",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -1279,16 +2071,12 @@
 							"path": [
 								"api",
 								"v1",
-								"gameprogress"
+								"stats"
 							],
 							"query": [
 								{
-									"key": "start",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "0"
+									"key": "sort_ascending",
+									"value": "false"
 								}
 							]
 						}
@@ -1296,7 +2084,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Game Progress for User",
+					"name": "Request Stats AuthServer",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1304,120 +2092,15 @@
 								"key": "X-Auth-Token",
 								"value": "{{X-Auth-Token}}",
 								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"gameprogress",
-								"juan0511"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create/Update Game Progress for User",
-					"request": {
-						"method": "PUT",
-						"header": [
+							},
 							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"next_level\": 5,\n    \"difficulty_level\": 5\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"gameprogress",
-								"juan0511"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Game Progress for User",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/gameprogress/juan0511",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"gameprogress",
-								"juan0511"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "High Scores",
-			"item": [
-				{
-					"name": "List all High Scores Records",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
+								"key": "X-Auth-Username",
+								"value": "{{X-Auth-Username}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores?start=0&limit=0",
+							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/statsauthserver?sort_ascending=false",
 							"protocol": "https",
 							"host": [
 								"fiuba-qa-7599-cs-app-server",
@@ -1427,121 +2110,13 @@
 							"path": [
 								"api",
 								"v1",
-								"highscores"
+								"statsauthserver"
 							],
 							"query": [
 								{
-									"key": "start",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "0"
+									"key": "sort_ascending",
+									"value": "false"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get High Scores for User",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"highscores",
-								"juan0511"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New High Score for User",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"juan0511\",\n    \"achieved_level\": 2,\n    \"difficulty_level\": 8,\n    \"time_elapsed\": \"20:10:40.045\",\n    \"gold_collected\": 5000,\n    \"high_score\": 1000000\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"highscores"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete High Scores for User",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-Auth-Token",
-								"value": "{{X-Auth-Token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1/highscores/juan0511",
-							"protocol": "https",
-							"host": [
-								"fiuba-qa-7599-cs-app-server",
-								"herokuapp",
-								"com"
-							],
-							"path": [
-								"api",
-								"v1",
-								"highscores",
-								"juan0511"
 							]
 						}
 					},

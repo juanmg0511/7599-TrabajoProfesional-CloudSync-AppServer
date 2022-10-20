@@ -72,17 +72,6 @@ def log_request(response):
        and ("/password" in data["path"])):
         data["value"] = "*"
 
-    # Parseamos la response a un diccionario
-    try:
-        # No logueamos las respuestas de pedidos de log!
-        if (("requestlog" in path)
-           and (response.status_code == HTTPStatus.OK)):
-            resp_data = "*"
-        else:
-            resp_data = eval(str(response.data.decode("utf-8")))
-    except Exception:
-        resp_data = str(response.data.decode("utf-8"))
-
     # Armamos el documento a guardar en la base de datos
     requestLog = {
         "log_type": "request",
@@ -96,12 +85,11 @@ def log_request(response):
         "user_name": g.session_username,
         "user_role": g.session_role,
         "session_token": g.session_token,
-        "status": status,
         "duration": duration,
         "headers": headers,
         "args": args,
         "data": data,
-        "response": resp_data
+        "response_status": status
     }
 
     # Insertamos el registro en la base de datos

@@ -39,7 +39,8 @@ class HomeTestCase(unittest.TestCase):
         r = self.app.get('/status')
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertEqual('online', r.json['data']['server_status'])
-        self.assertEqual('online', r.json['data']['database_status'])
+        self.assertEqual('online', r.json['data']['app_database_status'])
+        self.assertEqual('online', r.json['data']['log_database_status'])
 
     def test_on_starting_should_return_ok(self):
         app_server.on_starting(None)

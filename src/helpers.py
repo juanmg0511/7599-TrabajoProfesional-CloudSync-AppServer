@@ -173,6 +173,18 @@ def check_own_session(f):
     return wrapper
 
 
+# Funcion que devuelve el mensaje de error en caso que se produzca algun
+# problema durante la ejecucion de una operacion con la base de datos de
+# logs
+def handleLogDatabasebError(e):
+
+    appServer.app.logger.warning(log_request_id() + "Error excecuting a " +
+                                 "log database operation: " +
+                                 str(e))
+
+    return
+
+
 # Funcion que devuelve el mensaje de error y se encarga de finalizar el
 # request en caso que se produzca algun problema durante la ejecucion de
 # una operacion con la base de datos
@@ -229,6 +241,8 @@ def config_log():
                               config.mongodb_hostname)
     appServer.app.logger.debug("Database name: " +
                                config.mongodb_database)
+    appServer.app.logger.debug("Log database name: " +
+                               config.mongodb_log_database)
     appServer.app.logger.debug("Database username: " +
                                config.mongodb_username)
     appServer.app.logger.debug("Database using SSL: " +
@@ -293,9 +307,9 @@ def prune_stats():
         "pruned_stats": statsDeleted
     }
     try:
-        appServer.db.requestlog.insert_one(pruneLog)
+        appServer.db_log.requestlog.insert_one(pruneLog)
     except Exception as e:
-        return handleDatabasebError(e)
+        return handleLogDatabasebError(e)
     appServer.app.logger.debug('Prune expired stat records: ' +
                                'task data successfully logged to DB.')
 

@@ -39,6 +39,7 @@ services:
       API_AUTH_CLIENT_VERSION: "v1"
       # Datos para conectare a la DB
       MONGODB_DATABASE: app-server-db
+      MONGODB_LOG_DATABASE: app-server-log
       MONGODB_USERNAME: appserveruser
       MONGODB_PASSWORD: 123456
       MONGODB_HOSTNAME: app-server-mongodb
@@ -67,6 +68,7 @@ services:
       MONGO_NON_ROOT_USERNAME: appserveruser
       MONGO_NON_ROOT_PASSWORD: 123456
       MONGODB_DATABASE: app-server-db
+      MONGODB_LOG_DATABASE: app-server-log
       MONGODB_DATA_DIR: /data/db
       MONDODB_LOG_DIR: /dev/null
     volumes:

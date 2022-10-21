@@ -94,9 +94,9 @@ def log_request(response):
 
     # Insertamos el registro en la base de datos
     try:
-        appServer.db.requestlog.insert_one(requestLog)
+        appServer.db_log.requestlog.insert_one(requestLog)
     except Exception as e:
-        return helpers.handleDatabasebError(e)
+        return helpers.handleLogDatabasebError(e)
     appServer.app.logger.debug(helpers.log_request_id() +
                                'Request data successfully logged to DB.')
     return response
@@ -226,31 +226,29 @@ class RequestLog(Resource):
             # Tomamos los requests del dia, y hacemos los calculos
             if (sort_ascending is True):
                 try:
-                    day_records = appServer.db.requestlog.find(query)
+                    day_records = appServer.db_log.requestlog.find(query)
                 except Exception as e:
                     return helpers.handleDatabasebError(e)
             else:
                 try:
-                    day_records = appServer.db.requestlog.\
+                    day_records = appServer.db_log.requestlog.\
                                 find(query).\
                                 sort([("_id", -1)])
                 except Exception as e:
                     return helpers.handleDatabasebError(e)
 
-            while True:
-                try:
-                    record = day_records.next()
-                except StopIteration:
-                    break
+            try:
+                for record in day_records:
+                    numRecords += 1
+                    try:
+                        record["_id"] = str(record["_id"])
+                        record_data = eval(str(record))
+                    except Exception:
+                        record_data = {}
 
-                numRecords += 1
-                try:
-                    record["_id"] = str(record["_id"])
-                    record_data = eval(str(record))
-                except Exception:
-                    record_data = {}
-
-                logRecords.append(record_data)
+                    logRecords.append(record_data)
+            except Exception as e:
+                return helpers.handleDatabasebError(e)
 
         requeslogResponseGet = {
             "request_date:": datetime.utcnow().isoformat(),

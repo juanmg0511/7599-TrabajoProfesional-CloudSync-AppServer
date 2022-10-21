@@ -37,18 +37,30 @@ class Status(Resource):
                                   'Server status requested.')
         dbStatus = "offline"
         try:
-            # Informacion sobre la instancia de DB, para DEBUG
-            appServer.db.requestlog.find_one()
+            # Informacion sobre la instancia de DB de aplicacion,
+            # para DEBUG
+            appServer.db.adminusers.find_one()
             dbStatus = "online"
         except Exception:
             dbStatus = "offline"
+
+        dbLogStatus = "offline"
+        try:
+            # Informacion sobre la instancia de DB de logs,
+            # para DEBUG
+            appServer.db_log.requestlog.find_one()
+            dbLogStatus = "online"
+        except Exception:
+            dbLogStatus = "offline"
+
         statusResponseGet = {
             "code": 0,
             "message": "7599-cloudsync-app-server-v" +
                        config.server_version,
             "data": {
                         "server_status": "online",
-                        "database_status": dbStatus
+                        "app_database_status": dbStatus,
+                        "log_database_status": dbLogStatus
                      }
         }
         return helpers.return_request(statusResponseGet, HTTPStatus.OK)

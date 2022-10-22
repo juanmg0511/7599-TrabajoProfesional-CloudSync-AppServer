@@ -283,13 +283,13 @@ def prune_stats():
     # Limpieza de stats
     limitDate = date.today() - timedelta(days=int(config.stats_days_to_keep))
     try:
-        result = appServer.db.stats.delete_many({
+        result = appServer.db_log.stats.delete_many({
             "date": {"$lt": str(limitDate)}
         })
         statsDeleted = result.deleted_count
 
     except Exception as e:
-        return handleDatabasebError(e)
+        return handleLogDatabasebError(e)
 
     appServer.app.logger.info("prune_stats: deleted " +
                               str(statsDeleted) +

@@ -378,26 +378,17 @@ class UserExists(Resource):
     @helpers.log_reqId
     def get(self, username):
         try:
-            response_auth = authserver_client.\
-                            AuthAPIClient.\
-                            get_user(username)
-            if (response_auth.status_code == HTTPStatus.OK):
-                ResponseUserExistsGet = {
-                    "code": 0,
-                    "message": "User '" + username + "' exists.",
-                    "data": None
-                }
-                return helpers.return_request(ResponseUserExistsGet,
-                                              HTTPStatus.OK)
-            else:
-                return response_auth.json(), response_auth.status_code
+            response = authserver_client.\
+                       AuthAPIClient.\
+                       get_user_exists(username)
+            return response.json(), response.status_code
         except Exception as e:
-            ResponseUserExistsGet = {
+            ResponseUserSessionsGet = {
                 "code": -1,
                 "message": str(e),
                 "data": None
             }
-            return helpers.return_request(ResponseUserExistsGet,
+            return helpers.return_request(ResponseUserSessionsGet,
                                           HTTPStatus.SERVICE_UNAVAILABLE)
 
 

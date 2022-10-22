@@ -148,6 +148,16 @@ class AuthAPIClient:
                              headers=AuthAPIClient.__headers())
 
     @staticmethod
+    def get_user_exists(username):
+        return requests.get(config.api_auth_client_url + "/" +
+                            config.api_auth_client_path + "/" +
+                            config.api_auth_client_version + "/" +
+                            "users" + "/" +
+                            username + "/" +
+                            "exists",
+                            headers=AuthAPIClient.__headers())
+
+    @staticmethod
     def get_user_sessions(username, filters):
         return requests.get(config.api_auth_client_url + "/" +
                             config.api_auth_client_path + "/" +

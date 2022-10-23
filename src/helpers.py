@@ -10,7 +10,7 @@
 # OS para leer variables de entorno y logging para escribir los logs
 import uuid
 import re
-from datetime import date, datetime, timedelta
+from datetime import datetime
 # Flask, para la implementacion del servidor REST
 from flask import g
 from flask import request
@@ -281,10 +281,18 @@ def prune_stats():
     appServer.app.logger.info("prune_stats: starting...")
 
     # Limpieza de stats
-    limitDate = date.today() - timedelta(days=int(config.stats_days_to_keep))
     try:
+        statsToKeep = appServer.db_log.stats.find().\
+            skip(0).\
+            limit(int(config.stats_days_to_keep)).\
+            sort("date", -1)
+
+        idsStatsToKeep = []
+        for stat in statsToKeep:
+            idsStatsToKeep.append(stat["_id"])
+
         result = appServer.db_log.stats.delete_many({
-            "date": {"$lt": str(limitDate)}
+            "_id": {"$nin": idsStatsToKeep}
         })
         statsDeleted = result.deleted_count
 

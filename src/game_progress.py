@@ -158,19 +158,22 @@ class AllProgress(Resource):
                        "&limit=" +\
                        str(query_limit)
 
-        AllProgressResultsGet = []
-        for existingUser in allProgress:
-            retrievedProgress = {
-                "id": str(existingUser["_id"]),
-                "username": existingUser["username"],
-                "next_level": existingUser["next_level"],
-                "difficulty_level": existingUser["difficulty_level"],
-                "time_elapsed": existingUser["time_elapsed"],
-                "gold_collected": existingUser["gold_collected"],
-                "date_created": existingUser["date_created"],
-                "date_updated": existingUser["date_updated"]
-            }
-            AllProgressResultsGet.append(retrievedProgress)
+        try:
+            AllProgressResultsGet = []
+            for existingUser in allProgress:
+                retrievedProgress = {
+                    "id": str(existingUser["_id"]),
+                    "username": existingUser["username"],
+                    "next_level": existingUser["next_level"],
+                    "difficulty_level": existingUser["difficulty_level"],
+                    "time_elapsed": existingUser["time_elapsed"],
+                    "gold_collected": existingUser["gold_collected"],
+                    "date_created": existingUser["date_created"],
+                    "date_updated": existingUser["date_updated"]
+                }
+                AllProgressResultsGet.append(retrievedProgress)
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         # Construimos la respuesta paginada
         AllProgressResponseGet = {

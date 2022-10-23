@@ -216,20 +216,23 @@ class AllHighScores(Resource):
                        "&limit=" +\
                        str(query_limit)
 
-        AllHighScoresResultsGet = []
-        for existingHighScore in allHighScores:
-            retrievedHighScore = {
-                "id": str(existingHighScore["_id"]),
-                "username": existingHighScore["username"],
-                "achieved_level": existingHighScore["achieved_level"],
-                "difficulty_level": existingHighScore["difficulty_level"],
-                "time_elapsed": existingHighScore["time_elapsed"],
-                "gold_collected": existingHighScore["gold_collected"],
-                "high_score": existingHighScore["high_score"],
-                "date_created": existingHighScore["date_created"],
-                "date_updated": existingHighScore["date_updated"]
-            }
-            AllHighScoresResultsGet.append(retrievedHighScore)
+        try:
+            AllHighScoresResultsGet = []
+            for existingHighScore in allHighScores:
+                retrievedHighScore = {
+                    "id": str(existingHighScore["_id"]),
+                    "username": existingHighScore["username"],
+                    "achieved_level": existingHighScore["achieved_level"],
+                    "difficulty_level": existingHighScore["difficulty_level"],
+                    "time_elapsed": existingHighScore["time_elapsed"],
+                    "gold_collected": existingHighScore["gold_collected"],
+                    "high_score": existingHighScore["high_score"],
+                    "date_created": existingHighScore["date_created"],
+                    "date_updated": existingHighScore["date_updated"]
+                }
+                AllHighScoresResultsGet.append(retrievedHighScore)
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         # Construimos la respuesta paginada
         AllHighScoresResponseGet = {
@@ -701,20 +704,23 @@ class UserHighscores(Resource):
                        "&limit=" +\
                        str(query_limit)
 
-        AllHighScoresResultGet = []
-        for existingHighScore in existingHighScores:
-            retrievedHighScore = {
-                "id": str(existingHighScore["_id"]),
-                "username": existingHighScore["username"],
-                "achieved_level": existingHighScore["achieved_level"],
-                "difficulty_level": existingHighScore["difficulty_level"],
-                "time_elapsed": existingHighScore["time_elapsed"],
-                "gold_collected": existingHighScore["gold_collected"],
-                "high_score": existingHighScore["high_score"],
-                "date_created": existingHighScore["date_created"],
-                "date_updated": existingHighScore["date_updated"]
-            }
-            AllHighScoresResultGet.append(retrievedHighScore)
+        try:
+            AllHighScoresResultGet = []
+            for existingHighScore in existingHighScores:
+                retrievedHighScore = {
+                    "id": str(existingHighScore["_id"]),
+                    "username": existingHighScore["username"],
+                    "achieved_level": existingHighScore["achieved_level"],
+                    "difficulty_level": existingHighScore["difficulty_level"],
+                    "time_elapsed": existingHighScore["time_elapsed"],
+                    "gold_collected": existingHighScore["gold_collected"],
+                    "high_score": existingHighScore["high_score"],
+                    "date_created": existingHighScore["date_created"],
+                    "date_updated": existingHighScore["date_updated"]
+                }
+                AllHighScoresResultGet.append(retrievedHighScore)
+        except Exception as e:
+            return helpers.handleDatabasebError(e)
 
         # Construimos la respuesta paginada
         AllHighScoresResponseGet = {

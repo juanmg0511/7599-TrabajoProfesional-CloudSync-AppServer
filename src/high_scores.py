@@ -67,7 +67,8 @@ class AllHighScores(Resource):
             # aplica independientemente de si es especificada una columna o
             # no. El valor por default es ASCENDENTE (1)
             parser.add_argument("sort_order",
-                                type=int,
+                                type=helpers.
+                                non_empty_string,
                                 required=False,
                                 nullable=False)
             args = parser.parse_args()
@@ -109,15 +110,73 @@ class AllHighScores(Resource):
 
         # Se construye el sort para ordenar el query. Si no se especifica,
         # se trabaja con el natural order
+        array_column = False
+        array_order = False
+        query_sort_column_array = []
+        query_sort_order_array = []
+        query_sort = []
+
         query_sort_column = args.get("sort_column", None)
         query_sort_order = args.get("sort_order", None)
+
         if (query_sort_column is None):
             query_sort_column = "$natural"
-        if (
-            (query_sort_order is not None) and
-            (query_sort_order != -1)
-           ):
+        else:
+            query_sort_column_array = query_sort_column.split(",")
+            if len(query_sort_column_array) == 1:
+                query_sort_column = query_sort_column_array[0]
+                query_sort_column_array = []
+            else:
+                array_column = True
+
+        if (query_sort_order is None):
             query_sort_order = 1
+        else:
+            query_sort_order_array = query_sort_order.split(",")
+            if len(query_sort_order_array) == 1:
+                try:
+                    int(query_sort_order_array[0])
+                except ValueError:
+                    query_sort_order_array[0] = 1
+                if int(query_sort_order_array[0]) != -1:
+                    query_sort_order = 1
+                else:
+                    query_sort_order = -1
+                query_sort_order_array = []
+            else:
+                array_order = True
+
+        if ((array_column is False) and (array_order is False)):
+            query_sort.append((
+                str(query_sort_column).strip(),
+                int(query_sort_order)
+            ))
+
+        if ((array_order != array_column) or
+           (len(query_sort_column_array) != len(query_sort_order_array))):
+
+            AllHighScoresResponseGet = {
+                "code": -2,
+                "message": "Bad request. Invalid combination of sort " +
+                           "columns and orders provided.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponseGet,
+                                          HTTPStatus.BAD_REQUEST)
+        else:
+            for index, item in enumerate(query_sort_column_array):
+                if (query_sort_column_array[index] == ""):
+                    query_sort_column_array[index] = " "
+
+                try:
+                    int(query_sort_order_array[index])
+                except ValueError:
+                    query_sort_order_array[index] = 1
+
+                query_sort.append((
+                    str(query_sort_column_array[index]).strip(),
+                    int(query_sort_order_array[index])
+                ))
 
         # Operacion de base de datos
         try:
@@ -125,7 +184,7 @@ class AllHighScores(Resource):
                             find(find_query).\
                             skip(query_start).\
                             limit(query_limit).\
-                            sort(query_sort_column, query_sort_order)
+                            sort(query_sort)
             allHighScoresCount = appServer.db.highscores.\
                 count_documents(find_query)
         except Exception as e:
@@ -499,7 +558,8 @@ class UserHighscores(Resource):
             # aplica independientemente de si es especificada una columna o
             # no. El valor por default es ASCENDENTE (1)
             parser.add_argument("sort_order",
-                                type=int,
+                                type=helpers.
+                                non_empty_string,
                                 required=False,
                                 nullable=False)
             args = parser.parse_args()
@@ -535,15 +595,73 @@ class UserHighscores(Resource):
 
         # Se construye el sort para ordenar el query. Si no se especifica,
         # se trabaja con el natural order
+        array_column = False
+        array_order = False
+        query_sort_column_array = []
+        query_sort_order_array = []
+        query_sort = []
+
         query_sort_column = args.get("sort_column", None)
         query_sort_order = args.get("sort_order", None)
+
         if (query_sort_column is None):
             query_sort_column = "$natural"
-        if (
-            (query_sort_order is not None) and
-            (query_sort_order != -1)
-           ):
+        else:
+            query_sort_column_array = query_sort_column.split(",")
+            if len(query_sort_column_array) == 1:
+                query_sort_column = query_sort_column_array[0]
+                query_sort_column_array = []
+            else:
+                array_column = True
+
+        if (query_sort_order is None):
             query_sort_order = 1
+        else:
+            query_sort_order_array = query_sort_order.split(",")
+            if len(query_sort_order_array) == 1:
+                try:
+                    int(query_sort_order_array[0])
+                except ValueError:
+                    query_sort_order_array[0] = 1
+                if int(query_sort_order_array[0]) != -1:
+                    query_sort_order = 1
+                else:
+                    query_sort_order = -1
+                query_sort_order_array = []
+            else:
+                array_order = True
+
+        if ((array_column is False) and (array_order is False)):
+            query_sort.append((
+                str(query_sort_column).strip(),
+                int(query_sort_order)
+            ))
+
+        if ((array_order != array_column) or
+           (len(query_sort_column_array) != len(query_sort_order_array))):
+
+            AllHighScoresResponseGet = {
+                "code": -2,
+                "message": "Bad request. Invalid combination of sort " +
+                           "columns and orders provided.",
+                "data": None
+            }
+            return helpers.return_request(AllHighScoresResponseGet,
+                                          HTTPStatus.BAD_REQUEST)
+        else:
+            for index, item in enumerate(query_sort_column_array):
+                if (query_sort_column_array[index] == ""):
+                    query_sort_column_array[index] = " "
+
+                try:
+                    int(query_sort_order_array[index])
+                except ValueError:
+                    query_sort_order_array[index] = 1
+
+                query_sort.append((
+                    str(query_sort_column_array[index]).strip(),
+                    int(query_sort_order_array[index])
+                ))
 
         # Operacion de base de datos
         try:
@@ -551,7 +669,7 @@ class UserHighscores(Resource):
                                  find(find_query).\
                                  skip(query_start).\
                                  limit(query_limit).\
-                                 sort(query_sort_column, query_sort_order)
+                                 sort(query_sort)
             existingHighScoresCount = appServer.db.highscores.\
                 count_documents(find_query)
         except Exception as e:

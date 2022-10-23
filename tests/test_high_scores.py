@@ -91,6 +91,44 @@ class RequestLogTestCase(TestCase):
         self.assertEqual(True, len(r.json) > 0)
 
     @mock.patch("src.authserver_client.requests.get")
+    def test_get_all_highscores_sorting_should_return_ok(self,
+                                                         mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/highscores?' +
+                         'sort_column=username&sort_order=1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertEqual(True, len(r.json) > 0)
+
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_all_highscores_mulsorting_should_return_ok(self,
+                                                            mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/highscores?' +
+                         'sort_column=username,highscore&sort_order=1,1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertEqual(True, len(r.json) > 0)
+
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_all_highscores_mulsorting_should_return_400(self,
+                                                             mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/highscores?' +
+                         'sort_column=username,highscore&sort_order=1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
     def test_get_all_highscores_paging_inv_should_return_ok(self,
                                                             mock_get_session):
         mock_get_session.return_value = aux_functions.\
@@ -321,6 +359,44 @@ class RequestLogTestCase(TestCase):
         r = self.app.get('/api/v1/users/testunituser_usr_get/highscores',
                          headers={'X-Auth-Token': 'AuthServer is mocked'})
         self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_existing_user_sort_should_return_ok(self,
+                                                     mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/users/testunituser_usr_get/highscores' +
+                         '?start=0&limit=10&sort_column=username&sort_order=1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_existing_user_multsort_should_return_ok(self,
+                                                         mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/users/testunituser_usr_get/highscores' +
+                         '?start=0&limit=10&sort_column=username, ' +
+                         'highscore&sort_order=1, 1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+
+    @mock.patch("src.authserver_client.requests.get")
+    def test_get_existing_user_multsort_should_return_400(self,
+                                                          mock_get_session):
+        mock_get_session.return_value = aux_functions.\
+                                        mockCheckSessionAdmin(
+                                            "testunituser_admin")
+
+        r = self.app.get('/api/v1/users/testunituser_usr_get/highscores' +
+                         '?start=0&limit=10&sort_column=username, ' +
+                         'highscore&sort_order=1',
+                         headers={'X-Auth-Token': 'AuthServer is mocked'})
+        self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
 
     @mock.patch("src.authserver_client.requests.get")
     def test_delete_non_existin_user_should_return_not_found(self,

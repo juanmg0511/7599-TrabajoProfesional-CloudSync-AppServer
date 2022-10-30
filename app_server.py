@@ -224,6 +224,7 @@ api.add_resource(stats.Stats,
 # Solo permitimos http para el ambiente de desarrollo
 Talisman(app,
          force_https=(False if config.app_env == "DEV" else True),
+         force_https_permanent=True,
          content_security_policy=None)
 
 # Inicio del server en forma directa con WSGI

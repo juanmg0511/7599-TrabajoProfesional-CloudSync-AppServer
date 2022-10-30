@@ -145,6 +145,11 @@ def before_request():
     g.session_role = None
     g.session_token = None
     g.session_admin = None
+
+    from flask import request
+    app.logger.debug(helpers.log_request_id() +
+                     str(request.headers))
+
     # Inicializacion de valores
     # El token de sesion y el rol del usurio
     # se inicizan por medio de helpers.check_token,
@@ -222,9 +227,9 @@ api.add_resource(stats.Stats,
 
 # Wrappeamos con Talisman a la aplicacion Flask
 # Solo permitimos http para el ambiente de desarrollo
-Talisman(app,
+Talisman(app=app,
          force_https=(False if config.app_env == "DEV" else True),
-         force_https_permanent=True,
+         # force_https_permanent=True,
          content_security_policy=None)
 
 # Inicio del server en forma directa con WSGI

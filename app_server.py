@@ -222,9 +222,8 @@ api.add_resource(stats.Stats,
 
 # Wrappeamos con Talisman a la aplicacion Flask
 # Solo permitimos http para el ambiente de desarrollo
-Talisman(app=app,
+Talisman(app,
          force_https=(False if config.app_env == "DEV" else True),
-         strict_transport_security=False,
          content_security_policy=None)
 
 # Inicio del server en forma directa con WSGI

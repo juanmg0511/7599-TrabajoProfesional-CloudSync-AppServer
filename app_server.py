@@ -10,6 +10,7 @@
 # Logging para escribir los logs
 import logging
 import atexit
+import json
 # Flask, para la implementacion del servidor REST
 from flask import Flask
 from flask import g
@@ -20,6 +21,8 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 # Flask-Talisman para el manejo de SSL
 from flask_talisman import Talisman
+# Flask-Swagger-Ui para el hosting de la especificacion de la API
+from flask_swagger_ui import get_swaggerui_blueprint
 # Flask-APScheduler para el prune de la collection de stats
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -27,7 +30,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import app_server_config as config
 # Importacion de clases necesarias
 from src import home, authserver_relay, game_progress, high_scores,\
-                requestlog, stats, helpers
+                requestlog, stats, swagger_data, helpers
 
 # Inicializacion de la api
 app = Flask(__name__)
@@ -35,9 +38,6 @@ api = Api(app)
 
 # Inicializacion del parser de request ID
 RequestID(app)
-
-# Habilitacion de CORS
-CORS(app)
 
 # Inicializacion de la base de datos de aplicacion, MongoDB
 app.config["MONGO_APP_URI"] = "mongodb://" + \
@@ -219,14 +219,43 @@ api.add_resource(authserver_relay.AuthStats,
                  config.api_path + "/statsauthserver")
 api.add_resource(stats.Stats,
                  config.api_path + "/stats")
+api.add_resource(swagger_data.SwaggerData,
+                 config.api_path + "/swagger-data")
 
+# Configuracion de Swagger
+# Lectura del archivo con la definicion de la API
+swagger_data = helpers.loadTextFile("openapi3_0/openapi3_0.json")
+swagger_data = json.loads(swagger_data)
+# Definicion del path para la UI y locacion del endpoint con definicion
+SWAGGER_URL = config.api_path + '/swagger-ui'
+API_URL = config.api_path + '/swagger-data'
+# Registro del blueprint, disponibiliza Swagger-UI en el server
+swaggerui_blueprint = get_swaggerui_blueprint(
+   SWAGGER_URL,
+   API_URL
+)
+app.register_blueprint(swaggerui_blueprint)
+
+
+# Habilitacion de CORS
+# Solo permitimos los origenes especificados y los vebos utilizados
+CORS(app=app,
+     origins=config.cors_allowed_origins,
+     methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 
 # Wrappeamos con Talisman a la aplicacion Flask
 # Solo permitimos http para el ambiente de desarrollo
+# Deshabilitado HTTPS en ambiente de desarrollo
 Talisman(app=app,
-         force_https=(False if config.app_env == "DEV" else True),
+         force_https=config.talisman_force_https,
          force_https_permanent=True,
-         content_security_policy=None)
+         content_security_policy={
+            "default-src": "'self'",
+            "style-src": "'self' 'unsafe-inline';",
+            "img-src": "'self' data: validator.swagger.io",
+            "script-src": "'self' 'unsafe-inline'"
+         })
+
 
 # Inicio del server en forma directa con WSGI
 # Toma el puerto y modo de las variables de entorno

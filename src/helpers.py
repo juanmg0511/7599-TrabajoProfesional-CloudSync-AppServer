@@ -271,6 +271,13 @@ def config_log():
     appServer.app.logger.info("Time period to keep stats is: " +
                               str(config.stats_days_to_keep) +
                               " days.")
+    appServer.app.logger.info("CORS allowed origins: " +
+                              str(config.cors_allowed_origins))
+    appServer.app.logger.info("Force HTTPS: " +
+                              str(config.talisman_force_https))
+    if (config.talisman_force_https is False):
+        appServer.app.logger.warning("Force HTTPS is DISABLED. " +
+                                     "Please review Talisman config.")
     return 0
 
 
@@ -387,3 +394,12 @@ def non_empty_and_safe_filter_username(u):
 # formateado para el log default de Gunicorn
 def log_request_id():
     return "[" + str(current_request_id()) + "] "
+
+
+# Devuelve el contenido del archivo pasado por parametro
+def loadTextFile(path):
+    try:
+        with open(path, "r") as path_fp:
+            return str(path_fp.read())
+    except Exception as e:
+        return e

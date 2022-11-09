@@ -9,6 +9,7 @@
 # Importacion de librerias necesarias
 # OS para leer variables de entorno
 import os
+import ast
 
 
 ###############################################################################
@@ -57,6 +58,8 @@ mongodb_ssl_default = "false"
 mongodb_replica_set_default = "None"
 mongodb_auth_source_default = "None"
 username_max_length_default = 64
+talisman_force_https_default = False
+cors_allowed_origins_default = "*"
 
 
 ###############################################################################
@@ -109,6 +112,25 @@ api_auth_client_path = os.environ.get("API_AUTH_CLIENT_PATH",
                                       api_auth_client_path_default)
 api_auth_client_version = os.environ.get("API_AUTH_CLIENT_VERSION",
                                          api_auth_client_version_default)
+
+
+# Lectura de la configuracion de Talisman respecto a HTTPS
+talisman_force_https = os.environ.get("TALISMAN_FORCE_HTTPS",
+                                      talisman_force_https_default)
+
+if ((talisman_force_https.lower() == "true") and (app_env != "DEV")):
+    talisman_force_https = True
+else:
+    talisman_force_https = False
+
+
+# Lectura de los origenes habilitados en CORS
+cors_allowed_origins = os.environ.get("CORS_ALLOWED_ORIGINS",
+                                      cors_allowed_origins_default)
+try:
+    cors_allowed_origins = ast.literal_eval(cors_allowed_origins)
+except Exception:
+    cors_allowed_origins = cors_allowed_origins_default
 
 
 # Lectura de la configuracion del servidor de base de datos

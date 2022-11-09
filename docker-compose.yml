@@ -37,6 +37,11 @@ services:
       API_AUTH_CLIENT_URL: "http://192.168.10.12:81"
       API_AUTH_CLIENT_PATH: "api"
       API_AUTH_CLIENT_VERSION: "v1"
+      # Origenes habilitados en CORS
+      # Lista en formato CSV o "*"
+      CORS_ALLOWED_ORIGINS: "*"
+      # Configuracion de Talisman respecto a HTTPS
+      TALISMAN_FORCE_HTTPS: "False"      
       # Datos para conectare a la DB
       MONGODB_DATABASE: app-server-db
       MONGODB_LOG_DATABASE: app-server-log

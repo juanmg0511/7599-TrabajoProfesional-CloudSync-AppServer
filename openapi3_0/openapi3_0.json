@@ -1084,6 +1084,9 @@
             "name": "sort_column",
             "schema": {
               "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ColumnNamesArrayItem"
+              },
               "example": [
                 "column_1",
                 "column_2"
@@ -1097,6 +1100,9 @@
             "name": "sort_order",
             "schema": {
               "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ColumnOrdersArrayItem"
+              },
               "example": [
                 1,
                 -1
@@ -4007,6 +4013,9 @@
             "name": "sort_column",
             "schema": {
               "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ColumnNamesArrayItem"
+              },
               "example": [
                 "column_1",
                 "column_2"
@@ -4020,6 +4029,9 @@
             "name": "sort_order",
             "schema": {
               "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ColumnOrdersArrayItem"
+              },
               "example": [
                 1,
                 -1
@@ -6110,6 +6122,12 @@
             "readOnly": true
           }
         }
+      },
+      "ColumnNamesArrayItem": {
+        "type": "string"
+      },
+      "ColumnOrdersArrayItem": {
+        "type": "integer"
       },
       "OK": {
         "type": "object",

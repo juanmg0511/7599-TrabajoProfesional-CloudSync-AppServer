@@ -411,7 +411,7 @@ paths:
               example:
                 code: -1
                 message: User 'Juan Manuel' account is already closed.
-                data: null        
+                data: null
         '404':
           description: "Not found error (-1)"
           content:
@@ -720,6 +720,8 @@ paths:
           name: sort_column
           schema:
             type: array
+            items:
+              $ref: "#/components/schemas/ColumnNamesArrayItem"
             example: [column_1, column_2]
           required: false
           description: "***(null if not present)*** selects the columns to sort the results"
@@ -727,6 +729,8 @@ paths:
           name: sort_order
           schema:
             type: array
+            items:
+              $ref: "#/components/schemas/ColumnOrdersArrayItem"
             example: [1 , -1]
           required: false
           description: "***(natural order if not present)*** determines the sort order for the seleted columns: (1) ascending, (-1) descending"
@@ -2638,6 +2642,8 @@ paths:
           name: sort_column
           schema:
             type: array
+            items:
+              $ref: "#/components/schemas/ColumnNamesArrayItem"
             example: [column_1, column_2]
           required: false
           description: "***(null if not present)*** selects the columns to sort the results"
@@ -2645,6 +2651,8 @@ paths:
           name: sort_order
           schema:
             type: array
+            items:
+              $ref: "#/components/schemas/ColumnOrdersArrayItem"
             example: [1 , -1]
           required: false
           description: "***(natural order if not present)*** determines the sort order for the seleted columns: (1) ascending, (-1) descending"
@@ -4108,6 +4116,10 @@ components:
         response_status:
           type: string
           readOnly: true
+    ColumnNamesArrayItem:
+      type: string
+    ColumnOrdersArrayItem:
+      type: integer
     OK:
       type: object
       required:

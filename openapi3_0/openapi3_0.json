@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "FIUBA CloudSync API Reference",
-    "description": "API guide for the AuthServer<br />1C2022 - FIUBA - 75.99<br /><br />***Github***: https://github.com/juanmg0511/7599-TrabajoProfesional-CloudSync-AuthServer",
+    "description": "API guide for the AppServer<br />1C2022 - FIUBA - 75.99<br /><br />***GitHub***: <a href=\"https://github.com/juanmg0511/7599-TrabajoProfesional-CloudSync-AppServer\" target=\"_blank\">https://github.com/juanmg0511/7599-TrabajoProfesional-CloudSync-AppServer</a>",
     "version": "1.0",
     "license": {
       "name": "GPLv3",
@@ -11,19 +11,19 @@
   },
   "servers": [
     {
-      "url": "https://fiuba-pr-7599-cs-auth-server.herokuapp.com/api/v1",
-      "description": "Auth Server"
+      "url": "https://fiuba-pr-7599-cs-app-server.herokuapp.com/api/v1",
+      "description": "App Server"
     },
     {
-      "url": "https://fiuba-qa-7599-cs-auth-server.herokuapp.com/api/v1",
-      "description": "Auth Server - QA"
+      "url": "https://fiuba-qa-7599-cs-app-server.herokuapp.com/api/v1",
+      "description": "App Server - QA"
     }
   ],
   "paths": {
     "/users": {
       "get": {
         "summary": "Get all users",
-        "description": "Returns an array of all active registerd users. Optionally can be made to display closed accounts as well.",
+        "description": "Returns a paged array of all active registerd users. Optionally can be made to display closed accounts as well.",
         "operationId": "getUsers",
         "tags": [
           "users"
@@ -31,21 +31,30 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
           },
           {
             "in": "query",
@@ -55,35 +64,67 @@
             },
             "required": false,
             "description": "***(false if not present)*** shows closed accounts in result"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted column: (1) ascending, (-1) descending"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of users",
+            "description": "A paged array of users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Users"
+                  "$ref": "#/components/schemas/PagedUsers"
                 },
-                "example": [
-                  {
-                    "id": "5eb72ba5d2824353b87e5e94",
-                    "username": "JuanManuel",
-                    "first_name": "Juan Manuel",
-                    "last_name": "Gonzalez",
-                    "contact": {
-                      "email": "juan@example.com",
-                      "phone": "+54 11 5555 5555"
-                    },
-                    "avatar": {
-                      "url": "http://www.google.com/"
-                    },
-                    "login_service": false,
-                    "account_closed": false,
-                    "date_created": "2020-05-09T22:16:05.458187",
-                    "date_updated": null
-                  }
-                ]
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb72ba5d2824353b87e5e94",
+                      "username": "JuanManuel",
+                      "first_name": "Juan Manuel",
+                      "last_name": "Gonzalez",
+                      "contact": {
+                        "email": "juan@example.com",
+                        "phone": "+54 11 5555 5555"
+                      },
+                      "avatar": "...",
+                      "login_service": false,
+                      "online": true,
+                      "account_closed": false,
+                      "date_created": "2022-05-09T22:16:05.458187",
+                      "date_updated": null
+                    }
+                  ]
+                }
               }
             }
           },
@@ -101,11 +142,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -119,21 +175,12 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "requestBody": {
@@ -158,7 +205,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / bad argument format, contact (-2), bad argument format, avatar (-3) / account is closed (-4) / user already exists (-5)",
+            "description": "Bad request: missing required arguments (-1) / bad argument format, contact (-2), bad argument format, avatar (-3) / wrong combination of 'login_service' and 'password' (-4) / user already exists (-5) / email already exists (-6)",
             "content": {
               "application/json": {
                 "schema": {
@@ -171,13 +218,23 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ]
+        }
       }
     },
     "/users/{userName}": {
@@ -200,21 +257,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -223,7 +271,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Users"
+                  "$ref": "#/components/schemas/User"
                 },
                 "example": {
                   "id": "5eb72ba5d2824353b87e5e94",
@@ -235,12 +283,29 @@
                     "phone": "+54 11 5555 5555"
                   },
                   "avatar": {
-                    "url": "http://www.google.com/"
+                    "isUrl": true,
+                    "data": "http://www.google.com/"
                   },
                   "login_service": false,
+                  "online": true,
                   "account_closed": false,
-                  "date_created": "2020-05-09T22:16:05.458187",
+                  "date_created": "2022-05-09T22:16:05.458187",
                   "date_updated": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
                 }
               }
             }
@@ -263,13 +328,13 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
       "put": {
         "summary": "Update user",
-        "description": "Updates information for a user, provides user ***profile update***.",
+        "description": "Updates information for a user, provides user ***profile update***",
         "operationId": "putUser",
         "tags": [
           "users"
@@ -296,21 +361,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -331,7 +387,8 @@
                     "phone": "+54 11 5555 5555"
                   },
                   "avatar": {
-                    "url": "http://www.google.com/"
+                    "isUrl": true,
+                    "data": "http://www.google.com/"
                   },
                   "login_service": false,
                   "account_closed": false,
@@ -342,7 +399,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / bad argument format, contact (-2), bad argument format, avatar (-3), account closed (-4)",
+            "description": "Bad request: missing required arguments (-1) / bad argument format, contact (-2) / bad argument format, avatar (-3) / email already exists (-4) / account closed (-5)",
             "content": {
               "application/json": {
                 "schema": {
@@ -351,6 +408,21 @@
                 "example": {
                   "code": -1,
                   "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -374,13 +446,13 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
       "patch": {
         "summary": "Update user password or avatar",
-        "description": "Updates specific information for a user, provides update for: <br /> <br />***password***<br />***avatar URL***",
+        "description": "Updates specific information for a user, provides update for: <br /> <br />***password***<br />***avatar***",
         "operationId": "patchUser",
         "tags": [
           "users"
@@ -394,8 +466,8 @@
               },
               "example": {
                 "op": "replace",
-                "path": "/password or /avatar/url",
-                "value": "the new password or avatar URL"
+                "path": "/password or /avatar",
+                "value": "the new password or avatar object"
               }
             }
           }
@@ -412,21 +484,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -446,7 +509,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / bad argument format, value (-2), closed account (-3), uses login service and wants to update password (-4)",
+            "description": "Bad request: missing required arguments (-1) / bad argument format, value (-2) / invalid password (-1) / closed account (-3) / uses login service and wants to update password (-4)",
             "content": {
               "application/json": {
                 "schema": {
@@ -455,6 +518,21 @@
                 "example": {
                   "code": -1,
                   "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -478,7 +556,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -501,21 +579,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -549,6 +618,21 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not found error (-1)",
             "content": {
@@ -567,7 +651,690 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/users/{userName}/avatar": {
+      "get": {
+        "summary": "Get user avatar",
+        "description": "Gets the avatar information for the specified user.",
+        "operationId": "getUserAvatar",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the user to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The required user's avatar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Picture"
+                },
+                "example": {
+                  "isUrl": true,
+                  "data": "https://robohash.org/etveritatisillum.png?size=256x256&set=set1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/users/{userName}/gameprogress": {
+      "get": {
+        "summary": "Get user game progress record",
+        "description": "Gets the game progress record for a user, provides user ***load game***.",
+        "operationId": "getUserSProgress",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the user to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The game progress record for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "next_level": 10,
+                  "difficulty_level": 7,
+                  "time_elapsed": "40:40:40.000\"",
+                  "gold_collected": "98937,",
+                  "date_created": "2022-03-05T03:53:25.000000",
+                  "date_updated": "2022-05-17T06:50:45.000000"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Game progress record for user 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update user game progress record",
+        "description": "Updates the game progress record for a user, it is created if it does not exist. Provides ***save game***",
+        "operationId": "putUserGameProgress",
+        "tags": [
+          "users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameProgress"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game progress record for the user updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "next_level": 10,
+                  "difficulty_level": 7,
+                  "time_elapsed": "40:40:40.000\"",
+                  "gold_collected": "98937,",
+                  "date_created": "2022-03-05T03:53:25.000000",
+                  "date_updated": "2022-05-17T06:50:45.000000"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Game progress record for the user created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "next_level": 10,
+                  "difficulty_level": 7,
+                  "time_elapsed": "40:40:40.000\"",
+                  "gold_collected": "98937,",
+                  "date_created": "2022-03-05T03:53:25.000000",
+                  "date_updated": "2022-05-17T06:50:45.000000"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1) / account closed (-2)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' does not exist.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete user game progress record",
+        "description": "Deletes the game progress record for the specified user. Provides ***delete save game***.",
+        "operationId": "deleteUserGameProgress",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the game progress record to delete",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game progress record deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "Game progress record for user 'JuanManuel' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Game progress record for user 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/users/{userName}/highscores": {
+      "get": {
+        "summary": "Get user highscores",
+        "description": "Gets all highscores for a user, provides user ***highscores***.",
+        "operationId": "getUserHighscores",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the highscores to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "array",
+              "example": [
+                "column_1",
+                "column_2"
+              ]
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the columns to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "array",
+              "example": [
+                1,
+                -1
+              ]
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted columns: (1) ascending, (-1) descending"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paged array of highscores for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedHighscores"
+                },
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb72ba5d2824353b87e5e94",
+                      "username": "JuanManuel",
+                      "achieved_level": 1,
+                      "difficulty_level": 3,
+                      "time_elapsed": "45:45:45.000",
+                      "gold_collected": 69301,
+                      "high_score": 41893537,
+                      "date_created": "2021-12-15T18:32:22.000000",
+                      "date_updated": "2022-09-20T01:07:52.000000"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required arguments. (-1) / Invalid combination of sort columns and orders provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' account is closed.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Save a user highscore",
+        "description": "Creates a new highscore for a user, provides ***save highscore***.",
+        "operationId": "createUserHighScore",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the highscores to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Highscore"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New highscore created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Highscore"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete all user highscores",
+        "description": "Deletes the ***ALL*** the highscore records for a user. Provides ***reset highscores***.",
+        "operationId": "deleteUserHighscores",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the highscores to delete",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "***ALL*** user highscores deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "High score records for user 'JuanManuel' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "High score records for user 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
           }
         ]
       }
@@ -592,40 +1359,74 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted column: (1) ascending, (-1) descending"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of valid sessions for the user",
+            "description": "A paged array of valid sessions for the user",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Sessions"
+                  "$ref": "#/components/schemas/PagedSessions"
                 },
-                "example": [
-                  {
-                    "id": "5eb8cdb1ec54d8c9b812c074",
-                    "username": "JuanManuel",
-                    "session_token": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                    "expires": "2020-05-11T05:59:45.740404",
-                    "date_created": "2020-05-11T03:59:45.740445"
-                  }
-                ]
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb8cdb1ec54d8c9b812c074",
+                      "username": "JuanManuel",
+                      "user_role": "user",
+                      "session_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                      "expires": "2022-05-11T05:59:45.740404",
+                      "date_created": "2022-05-11T03:59:45.740445"
+                    }
+                  ]
+                }
               }
             }
           },
@@ -639,6 +1440,21 @@
                 "example": {
                   "code": -1,
                   "message": "User 'JuanManuel' account is closed.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -662,28 +1478,26 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
-      }
-    },
-    "/adminusers": {
-      "get": {
-        "summary": "Get all admin users",
-        "description": "Returns an array of all active registerd admin users. Optionally can be made to display closed accounts as well.",
-        "operationId": "getAdminUsers",
+      },
+      "delete": {
+        "summary": "Delete all user sessions",
+        "description": "Deletes the all user sessions, user will have to login again. Provides ***logout***.",
+        "operationId": "deleteAllUserSessions",
         "tags": [
-          "adminusers"
+          "users"
         ],
         "parameters": [
           {
-            "in": "header",
-            "name": "X-Client-ID",
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the user to delete",
             "schema": {
               "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
+            }
           },
           {
             "in": "header",
@@ -691,7 +1505,176 @@
             "schema": {
               "type": "string"
             },
-            "required": false
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "All sessions for user 'JuanManuel' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/users/{userName}/exists": {
+      "get": {
+        "summary": "Check if user or email exists",
+        "description": "Verifies if the user or email is already in use by another user, provides ***identifier verification***.",
+        "operationId": "getUserExists",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username or email of the user to verify",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The result of the verification: User already exists (0) / Email already exists (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' already exists.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/adminusers": {
+      "get": {
+        "summary": "Get all admin users",
+        "description": "Returns a paged array of all active registerd admin users. Optionally can be made to display closed accounts as well.",
+        "operationId": "getAdminUsers",
+        "tags": [
+          "adminusers"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
           },
           {
             "in": "query",
@@ -701,28 +1684,62 @@
             },
             "required": false,
             "description": "***(false if not present)*** shows closed accounts in result"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted column: (1) ascending, (-1) descending"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of admin users",
+            "description": "A paged array of admin users",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminUsers"
+                  "$ref": "#/components/schemas/PagedAdminUsers"
                 },
-                "example": [
-                  {
-                    "id": "5eb72ba5d2824353b87e5e94",
-                    "username": "JuanManuel",
-                    "first_name": "Juan Manuel",
-                    "last_name": "Gonzalez",
-                    "email": "juan@example.com",
-                    "account_closed": false,
-                    "date_created": "2020-05-09T22:16:05.458187",
-                    "date_updated": null
-                  }
-                ]
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb72ba5d2824353b87e5e94",
+                      "username": "JuanManuel",
+                      "first_name": "Juan Manuel",
+                      "last_name": "Gonzalez",
+                      "email": "juan@example.com",
+                      "online": true,
+                      "account_closed": false,
+                      "date_created": "2022-05-09T22:16:05.458187",
+                      "date_updated": null
+                    }
+                  ]
+                }
               }
             }
           },
@@ -740,11 +1757,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -758,21 +1790,12 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "requestBody": {
@@ -797,7 +1820,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / user already exists (-2)",
+            "description": "Bad request: missing required arguments (-1) / user already exists (-2) / email already exists (-3)",
             "content": {
               "application/json": {
                 "schema": {
@@ -810,11 +1833,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       }
@@ -839,21 +1877,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -862,7 +1891,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminUsers"
+                  "$ref": "#/components/schemas/AdminUser"
                 },
                 "example": {
                   "id": "5eb72ba5d2824353b87e5e94",
@@ -870,9 +1899,25 @@
                   "first_name": "Juan Manuel",
                   "last_name": "Gonzalez",
                   "email": "juan@example.com",
+                  "online": true,
                   "account_closed": false,
-                  "date_created": "2020-05-09T22:16:05.458187",
+                  "date_created": "2022-05-09T22:16:05.458187",
                   "date_updated": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
                 }
               }
             }
@@ -895,7 +1940,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -928,21 +1973,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -960,14 +1996,14 @@
                   "last_name": "Gonzalez",
                   "email": "juan@example.com",
                   "account_closed": false,
-                  "date_created": "2020-05-09T22:16:05.458187",
-                  "date_updated": "2020-05-09T22:18:05.458187"
+                  "date_created": "2022-05-09T22:16:05.458187",
+                  "date_updated": "2022-05-09T22:18:05.458187"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / closed account (-2)",
+            "description": "Bad request: missing required arguments (-1) / wrong format for contact (-2) / wrong format for avatar (-3) / email already exists (-4) / closed account (-5)",
             "content": {
               "application/json": {
                 "schema": {
@@ -976,6 +2012,21 @@
                 "example": {
                   "code": -1,
                   "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -999,7 +2050,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -1037,21 +2088,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -1071,7 +2113,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / account closed (-2)",
+            "description": "Bad request: missing required arguments (-1) / wrong format for value (-2) / invalid password (-1) / account closed (-3) / uses login service and wants to update password (-4)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1080,6 +2122,21 @@
                 "example": {
                   "code": -1,
                   "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -1103,7 +2160,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -1126,21 +2183,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -1174,6 +2222,21 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not found error (-1)",
             "content": {
@@ -1192,7 +2255,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       }
@@ -1217,45 +2280,79 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for for this request"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of valid sessions for the admin user",
+            "description": "An paged array of valid sessions for the admin user",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Sessions"
+                  "$ref": "#/components/schemas/PagedSessions"
                 },
-                "example": [
-                  {
-                    "id": "5eb8cdb1ec54d8c9b812c074",
-                    "username": "chotuvegod",
-                    "session_token": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                    "expires": "2020-05-11T05:59:45.740404",
-                    "date_created": "2020-05-11T03:59:45.740445"
-                  }
-                ]
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb8cdb1ec54d8c9b812c074",
+                      "username": "cloudsyncgod",
+                      "user_role": "admin",
+                      "session_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                      "expires": "2022-05-11T05:59:45.740404",
+                      "date_created": "2022-05-11T03:59:45.740445"
+                    }
+                  ]
+                }
               }
             }
           },
           "400": {
-            "description": "Already closed account (-1)",
+            "description": "Bad request. Missing required arguments (-1) / Already closed account (-1)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1263,7 +2360,22 @@
                 },
                 "example": {
                   "code": -1,
-                  "message": "Admin user 'chotuvegod' account is closed.",
+                  "message": "Admin user 'cloudsyncgod' account is closed.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
                   "data": null
                 }
               }
@@ -1278,7 +2390,7 @@
                 },
                 "example": {
                   "code": -1,
-                  "message": "Admin user 'chotuvegod' not found.",
+                  "message": "Admin user 'cloudsyncgod' not found.",
                   "data": null
                 }
               }
@@ -1287,28 +2399,26 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
-      }
-    },
-    "/sessions": {
-      "get": {
-        "summary": "Get all sessions",
-        "description": "Returns an array of all sessions, both active and expired.",
-        "operationId": "getAllSessions",
+      },
+      "delete": {
+        "summary": "Delete all admin user sessions",
+        "description": "Deletes the all amdin user sessions, user will have to login again. Provides ***logout***.",
+        "operationId": "deleteAllAdminUserSessions",
         "tags": [
-          "sessions"
+          "adminusers"
         ],
         "parameters": [
           {
-            "in": "header",
-            "name": "X-Client-ID",
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The username of the user to delete",
             "schema": {
               "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
+            }
           },
           {
             "in": "header",
@@ -1317,33 +2427,188 @@
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of sessions",
+            "description": "Sessions deleted",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Sessions"
+                  "$ref": "#/components/schemas/OK"
                 },
-                "example": [
-                  {
-                    "id": "5eb8cdb1ec54d8c9b812c074",
-                    "username": "chotuvegod",
-                    "session_token": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                    "expires": "2020-05-11T05:59:45.740404",
-                    "date_created": "2020-05-11T03:59:45.740445"
-                  }
-                ]
+                "example": {
+                  "code": 0,
+                  "message": "All sessions for user 'cloudsyncgod' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'cloudsyncgod' not found.",
+                  "data": null
+                }
               }
             }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/sessions": {
+      "get": {
+        "summary": "Get all sessions",
+        "description": "Returns a paged array of all sessions, both active and expired.",
+        "operationId": "getAllSessions",
+        "tags": [
+          "sessions"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paged array of sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedSessions"
+                },
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb8cdb1ec54d8c9b812c074",
+                      "username": "cloudsyncgod",
+                      "user_role": "admin",
+                      "session_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                      "expires": "2022-05-11T05:59:45.740404",
+                      "date_created": "2022-05-11T03:59:45.740445"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
           }
         ]
       },
@@ -1355,24 +2620,6 @@
           "sessions"
         ],
         "parameters": [
-          {
-            "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
-            "name": "X-Request-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "description": "a unique identifier for this request"
-          },
           {
             "in": "header",
             "name": "X-Admin",
@@ -1405,7 +2652,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / Account is closed (-2) / Wrong combination of username and token or password (-3)",
+            "description": "Bad request: missing required arguments (-1) / Account is closed (-2) / Wrong combination of username and token or password (-3, -4, -5)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1418,11 +2665,131 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized (-1) / Wrong username or password (-2) / Identity validation with external service provider failed (-3) / User not found (-4)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error creating acces token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Error creating acces token.",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all sessions except the one provided",
+        "description": "Deletes the all sessions, except the one passed as query param. Users will have to login again. Provides ***logout***.",
+        "operationId": "deleteAllSessions",
+        "tags": [
+          "sessions"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Session token of the one session not to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sessions deleted, except the one provided as query param",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "All sessions except token 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-2)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Session with token 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' not found.",
+                  "data": null
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       }
@@ -1447,26 +2814,17 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
           "200": {
-            "description": "A session",
+            "description": "A session, with renewed expiry time",
             "content": {
               "application/json": {
                 "schema": {
@@ -1474,10 +2832,26 @@
                 },
                 "example": {
                   "id": "5eb8cdb1ec54d8c9b812c074",
-                  "username": "chotuvegod",
-                  "session_token": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                  "expires": "2020-05-11T05:59:45.740404",
-                  "date_created": "2020-05-11T03:59:45.740445"
+                  "username": "cloudsyncgod",
+                  "user_role": "admin",
+                  "session_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                  "expires": "2022-05-11T05:59:45.740404",
+                  "date_created": "2022-05-11T03:59:45.740445"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid token supplied (-1) / Expired token supplied (-2) / Token not found (-3)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Invalid token 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' supplied.",
+                  "data": null
                 }
               }
             }
@@ -1485,7 +2859,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -1508,26 +2882,17 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
           "200": {
-            "description": "Session deleted (0) / Session not found (0)",
+            "description": "Session deleted (0)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1535,7 +2900,37 @@
                 },
                 "example": {
                   "code": 0,
-                  "message": "Session with token 'd9f6c4b4-933b-11ea-9566-72ba225d89f0' deleted.",
+                  "message": "Session with token 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Session with token 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' not found.",
                   "data": null
                 }
               }
@@ -1544,7 +2939,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       }
@@ -1552,7 +2947,7 @@
     "/recovery": {
       "get": {
         "summary": "Get all recovery requests",
-        "description": "Returns an array of all recovery requests, both active and expired.",
+        "description": "Returns a paged array of all recovery requests, both active and expired.",
         "operationId": "getAllRecovery",
         "tags": [
           "recovery"
@@ -1560,47 +2955,120 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for for this request"
           }
         ],
         "responses": {
           "200": {
-            "description": "An array of recovery requests",
+            "description": "A paged array of recovery requests",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Recoveries"
+                  "$ref": "#/components/schemas/PagedRecoveries"
                 },
-                "example": [
-                  {
-                    "id": "5eb8cdb1ec54d8c9b812c074",
-                    "username": "chotuvegod",
-                    "recovery_key": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                    "expires": "2020-05-11T05:59:45.740404",
-                    "date_created": "2020-05-11T03:59:45.740445"
-                  }
-                ]
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb8cdb1ec54d8c9b812c074",
+                      "username": "JuanManuel",
+                      "email": "juan@example.com",
+                      "recovery_key": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                      "expires": "2022-05-11T05:59:45.740404",
+                      "date_created": "2022-05-11T03:59:45.740445"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
               }
             }
           }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -1614,21 +3082,12 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "requestBody": {
@@ -1667,6 +3126,21 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not found error (-1)",
             "content": {
@@ -1681,13 +3155,23 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "Error creating acces token (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ]
+        }
       }
     },
     "/recovery/{userName}": {
@@ -1710,21 +3194,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "responses": {
@@ -1737,16 +3212,32 @@
                 },
                 "example": {
                   "id": "5eb8cdb1ec54d8c9b812c074",
-                  "username": "chotuvegod",
-                  "recovery_key": "d9f6c4b4-933b-11ea-9566-72ba225d89f0",
-                  "expires": "2020-05-11T05:59:45.740404",
-                  "date_created": "2020-05-11T03:59:45.740445"
+                  "username": "JuanManuel",
+                  "email": "juan@example.com",
+                  "recovery_key": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
+                  "expires": "2022-05-11T05:59:45.740404",
+                  "date_created": "2022-05-11T03:59:45.740445"
                 }
               }
             }
           },
           "400": {
             "description": "Account is closed (-1) / User uses login service (-2)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' account is closed.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1) / User has not requested password recovery (-3)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1778,7 +3269,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       },
@@ -1801,21 +3292,12 @@
           },
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           }
         ],
         "requestBody": {
@@ -1826,7 +3308,7 @@
                 "$ref": "#/components/schemas/RecoveryPassword"
               },
               "example": {
-                "recovery_key": "635147d2-a12b-11ea-b54b-0242ac1e0003",
+                "recovery_key": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8",
                 "new_password": "new password set by user"
               }
             }
@@ -1849,7 +3331,7 @@
             }
           },
           "400": {
-            "description": "Bad request: missing required arguments (-1) / account is closed (-2) / user uses login service (-3)",
+            "description": "Bad request: missing required arguments (-1) / invalid password (-1) / account is closed (-2) / user uses login service (-3)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1858,6 +3340,21 @@
                 "example": {
                   "code": -1,
                   "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid recovery key (-1, -4) / Expired recovery key (-2) / User has not requested password recovery (-3)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Invalid recovery key 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NzA2MDA1MTUsIm5iZiI6MTY3MDYwMDUxNSwianRpIjoiYzczOTg4ZjUtODZhZi00MTg4LTgxMDgtMWE1M2RjYzY4MzI4IiwiaWRlbnRpdHkiOiJjbG91ZHN5bmNnb2QiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.sbKSTnJctn245jdSbP4fsZXP8uPZNblGqCAMlwj0fQ8' supplied.",
                   "data": null
                 }
               }
@@ -1878,10 +3375,1079 @@
               }
             }
           }
+        }
+      },
+      "delete": {
+        "summary": "Delete recovery request for user",
+        "description": "Deletes the specified recovery request, user will have to regenerate one again.",
+        "operationId": "deleteRecovery",
+        "tags": [
+          "recovery"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "description": "The user whose request is to be deleted",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recovery request deleted (0)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "Password (recovery) for user 'JuanManuel' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Password (recovery) for user 'JuanManuel' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/gameprogress": {
+      "get": {
+        "summary": "Get all game progress records",
+        "description": "Returns a paged array of all game progress records.",
+        "operationId": "getAllGameProgress",
+        "tags": [
+          "gameprogress"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the column to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted column: (1) ascending, (-1) descending"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paged array of game progress records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedGameProgress"
+                },
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb72ba5d2824353b87e5e94",
+                      "username": "JuanManuel",
+                      "next_level": 10,
+                      "difficulty_level": 7,
+                      "time_elapsed": "40:40:40.000\"",
+                      "gold_collected": "98937,",
+                      "date_created": "2022-03-05T03:53:25.000000",
+                      "date_updated": "2022-05-17T06:50:45.000000"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a game progress record",
+        "description": "Creates a game progress regord.",
+        "operationId": "createGameProgress",
+        "tags": [
+          "gameprogress"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameProgress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New game progress record created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1) / closed account (-2) / Game Progress record already exists (-3)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "User 'JuanManuel' does not exist.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/gameprogress/{id}": {
+      "get": {
+        "summary": "Get game progress record",
+        "description": "Gets a game progress record.",
+        "operationId": "getGameProgress",
+        "tags": [
+          "gameprogress"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the game progress record to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A game progress record for the specfied id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "next_level": 10,
+                  "difficulty_level": 7,
+                  "time_elapsed": "40:40:40.000\"",
+                  "gold_collected": "98937,",
+                  "date_created": "2022-03-05T03:53:25.000000",
+                  "date_updated": "2022-05-17T06:50:45.000000"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Game progress record with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update game progress record",
+        "description": "Updates a game progress record.",
+        "operationId": "putGameProgress",
+        "tags": [
+          "gameprogress"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameProgress"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the game progress record to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game progress record updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameProgress"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "next_level": 10,
+                  "difficulty_level": 7,
+                  "time_elapsed": "40:40:40.000\"",
+                  "gold_collected": "98937,",
+                  "date_created": "2022-03-05T03:53:25.000000",
+                  "date_updated": "2022-05-17T06:50:45.000000"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Game progress record with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete game progress record",
+        "description": "Deletes a game progress record.",
+        "operationId": "deleteGameProgress",
+        "tags": [
+          "gameprogress"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the game progress record to delete",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game progress record deleted (0)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "Game progress record with id '5eb72ba5d2824353b87e5e94' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Game progress record with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/highscores": {
+      "get": {
+        "summary": "Get all highscores",
+        "description": "Returns a paged array of all highscores.",
+        "operationId": "getAllHisghscores",
+        "tags": [
+          "highscores"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(0 if not present)*** sets the first record to show"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "***(100 if not present)*** sets the page size"
+          },
+          {
+            "in": "query",
+            "name": "user_filter",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(null if not present)*** only shows records matching the specified username"
+          },
+          {
+            "in": "query",
+            "name": "sort_column",
+            "schema": {
+              "type": "array",
+              "example": [
+                "column_1",
+                "column_2"
+              ]
+            },
+            "required": false,
+            "description": "***(null if not present)*** selects the columns to sort the results"
+          },
+          {
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "type": "array",
+              "example": [
+                1,
+                -1
+              ]
+            },
+            "required": false,
+            "description": "***(natural order if not present)*** determines the sort order for the seleted columns: (1) ascending, (-1) descending"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paged array of highscores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedHighscores"
+                },
+                "example": {
+                  "total": 1,
+                  "limit": 100,
+                  "next": null,
+                  "previous": null,
+                  "results": [
+                    {
+                      "id": "5eb72ba5d2824353b87e5e94",
+                      "username": "JuanManuel",
+                      "achieved_level": 1,
+                      "difficulty_level": 3,
+                      "time_elapsed": "45:45:45.000",
+                      "gold_collected": 69301,
+                      "high_score": 41893537,
+                      "date_created": "2021-12-15T18:32:22.000000",
+                      "date_updated": "2022-09-20T01:07:52.000000"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required arguments. (-1) / Invalid combination of sort columns and orders provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a highscore",
+        "description": "Creates a highscore.",
+        "operationId": "createHighscore",
+        "tags": [
+          "highscores"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Highscore"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New highscore created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Highscore"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/highscores/{id}": {
+      "get": {
+        "summary": "Get highscore record",
+        "description": "Gets a highscore record.",
+        "operationId": "getHighscore",
+        "tags": [
+          "highscores"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the highscore to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A highscore",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "achieved_level": 1,
+                  "difficulty_level": 3,
+                  "time_elapsed": "45:45:45.000",
+                  "gold_collected": 69301,
+                  "high_score": 41893537,
+                  "date_created": "2021-12-15T18:32:22.000000",
+                  "date_updated": "2022-09-20T01:07:52.000000"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "High score record with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update highscore",
+        "description": "Updates a highscore record.",
+        "operationId": "putHighscore",
+        "tags": [
+          "highscores"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Highscore"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the highscore to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Highscore updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Highscore"
+                },
+                "example": {
+                  "id": "5eb72ba5d2824353b87e5e94",
+                  "username": "JuanManuel",
+                  "achieved_level": 1,
+                  "difficulty_level": 3,
+                  "time_elapsed": "45:45:45.000",
+                  "gold_collected": 69301,
+                  "high_score": 41893537,
+                  "date_created": "2021-12-15T18:32:22.000000",
+                  "date_updated": "2022-09-20T01:07:52.000000"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: missing required arguments (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "High score record with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete highscore",
+        "description": "Deletes a highscore record.",
+        "operationId": "deleteHighscore",
+        "tags": [
+          "highscores"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The id of the highscore to delete",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Highscore deleted (0)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OK"
+                },
+                "example": {
+                  "code": 0,
+                  "message": "High score record with id '5eb72ba5d2824353b87e5e94' deleted.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found error (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "High score records with id '5eb72ba5d2824353b87e5e94' not found.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
           }
         ]
       }
@@ -1897,31 +4463,22 @@
         "parameters": [
           {
             "in": "header",
-            "name": "X-Client-ID",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "API key for the client server"
-          },
-          {
-            "in": "header",
             "name": "X-Request-ID",
             "schema": {
               "type": "string"
             },
             "required": false,
-            "description": "a unique identifier for this request"
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
           },
           {
             "in": "query",
-            "name": "datestart",
+            "name": "startdate",
             "required": true,
             "description": "The starting date of the required period",
             "schema": {
               "type": "string"
             },
-            "example": "2020-05-30"
+            "example": "2022-12-10"
           },
           {
             "in": "query",
@@ -1929,7 +4486,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "2020-05-31",
+            "example": "2022-12-10",
             "required": true,
             "description": "The ending date of the required period"
           },
@@ -1963,17 +4520,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReqLogResponse"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ReqLogResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogMail"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogSessionsTask"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogRecoveryTask"
+                    }
+                  ]
                 },
                 "example": {
-                  "request_date": "2020-05-31T17:13:39.227725",
+                  "request_date": "2022-05-31T17:13:39.227725",
                   "requested_days": "1",
                   "records_retrieved": "1",
                   "request_log": [
                     {
                       "_id": "5ed29c83dad788fb92620ceb",
                       "log_type": "request",
-                      "request_date": "2020-05-30T17:48:51.884252",
+                      "request_date": "2022-05-30T17:48:51.884252",
                       "request_id": "15f00a7b-eea8-454a-aa3a-4529c19de7c6",
                       "remote_ip": "54.146.137.47",
                       "host": "fiuba-qa-7599-cs-auth-server.herokuapp.com",
@@ -2002,18 +4572,42 @@
                       },
                       "args": {},
                       "data": {
-                        "username": "chotuvegod",
+                        "username": "cloudsyncgod",
                         "password": "*"
                       },
-                      "response": {
-                        "username": "chotuvegod",
-                        "session_token": "d2d21352-a29d-11ea-bbb9-7ad6a5a7e34f",
-                        "expires": "2020-05-30T19:48:51.877048",
-                        "date_created": "2020-05-30T17:48:51.877096",
-                        "id": "5ed29c83dad788fb92620cea"
-                      }
+                      "response_status": "201 CREATED"
                     }
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
                 }
               }
             }
@@ -2021,7 +4615,175 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/requestlogauthserver": {
+      "get": {
+        "summary": "Get request log entries for AuthServer",
+        "description": "Returns a list of requests/events for the server, by date. Logged requests/events are: <br /><br />***requests***<br />***e-mails sent***<br />***scheduled tasks***",
+        "operationId": "getRequestLogAuthServer",
+        "tags": [
+          "requestlog"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "startdate",
+            "required": true,
+            "description": "The starting date of the required period",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2022-12-10"
+          },
+          {
+            "in": "query",
+            "name": "enddate",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2022-12-10",
+            "required": true,
+            "description": "The ending date of the required period"
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "schema": {
+              "$ref": "#/components/schemas/ReqlogFilter"
+            },
+            "example": {
+              "comparator": "'eq' for exact match or 'in' for includes",
+              "field": "field to filter by",
+              "value": "value to filter"
+            },
+            "required": false,
+            "description": "***(retrieves all records matching date range if not present)*** Filter by a certain field"
+          },
+          {
+            "in": "query",
+            "name": "sortascending",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "description": "***(false if not present)*** Sort order of the results array, by date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of request log entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ReqLogResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogMail"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogSessionsTask"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ReqLogRecoveryTask"
+                    }
+                  ]
+                },
+                "example": {
+                  "request_date": "2022-05-31T17:13:39.227725",
+                  "requested_days": "1",
+                  "records_retrieved": "1",
+                  "request_log": [
+                    {
+                      "_id": "5ed29c83dad788fb92620ceb",
+                      "log_type": "request",
+                      "request_date": "2022-05-30T17:48:51.884252",
+                      "request_id": "15f00a7b-eea8-454a-aa3a-4529c19de7c6",
+                      "remote_ip": "54.146.137.47",
+                      "host": "fiuba-qa-7599-cs-auth-server.herokuapp.com",
+                      "api_version": "v1",
+                      "method": "POST",
+                      "path": "/api/v1/sessions",
+                      "status": "201 CREATED",
+                      "duration": "0.957623",
+                      "headers": {
+                        "Host": "fiuba-qa-7599-cs-auth-server.herokuapp.com",
+                        "Connection": "close",
+                        "User-Agent": "python-requests/2.23.0",
+                        "Accept-Encoding": "gzip, deflate",
+                        "Accept": "*/*",
+                        "X-Client-Id": "407f7dbf-57d5-4aea-bfbd-d317ae872428",
+                        "X-Request-Id": "15f00a7b-eea8-454a-aa3a-4529c19de7c6",
+                        "Content-Type": "application/json",
+                        "X-Forwarded-For": "54.146.137.47",
+                        "X-Forwarded-Proto": "https",
+                        "X-Forwarded-Port": "443",
+                        "Via": "1.1 vegur",
+                        "Connect-Time": "1",
+                        "X-Request-Start": "1590860930911",
+                        "Total-Route-Time": "3",
+                        "Content-Length": "61"
+                      },
+                      "args": {},
+                      "data": {
+                        "username": "cloudsyncgod",
+                        "password": "*"
+                      },
+                      "response_status": "201 CREATED"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
           }
         ]
       }
@@ -2029,22 +4791,147 @@
     "/stats": {
       "get": {
         "summary": "Returns usage statistics from server",
-        "description": "Returns an overview of useful usage stats for the server, by date. Provides ***usage statistics***.",
+        "description": "Returns an overview of useful usage stats for the server: a snapshot of current key figures and an array with daily stats, by date. The amount of days to return is configurable in the server. Provides ***usage statistics***.",
         "operationId": "stats",
         "tags": [
           "stats"
         ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "sortascending",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "description": "***(false if not present)*** Sort order of the results array, by date"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Usage stats, with an array of dates",
+            "description": "Usage stats, with a snapshot of key figures and an array of daily stats.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Stats"
                 },
                 "example": {
-                  "request_date:": "2020-05-31T14:58:54.787980",
-                  "requested_days": 2,
+                  "request_date:": "2022-05-31T14:58:54.787980",
+                  "registered_higshscores": 8,
+                  "registered_game_progress": 0,
+                  "daily_stats": [
+                    {
+                      "date": "2022-05-30",
+                      "game_progress_deleted": 0,
+                      "game_progress_saved": 0,
+                      "game_progress_updated": 0,
+                      "highscores_deleted": 0,
+                      "highscores_new": 0,
+                      "requests_auth_api": 14,
+                      "requests_game_progress": 0,
+                      "requests_highscores": 0,
+                      "requests_number": 19,
+                      "requests_per_minute": 0.013194444444444444,
+                      "response_time_avg": 2.2901225,
+                      "response_time_max": 4.343952,
+                      "response_time_min": 0.236293,
+                      "requests_error_400": 0,
+                      "requests_error_401": 0,
+                      "requests_error_404": 0,
+                      "requests_error_405": 0,
+                      "requests_error_500": 0,
+                      "requests_error_503": 0
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing or wrong format for required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Session_Token": []
+          }
+        ]
+      }
+    },
+    "/statsauthserver": {
+      "get": {
+        "summary": "Returns usage statistics from AuthServer",
+        "description": "Returns an overview of useful usage stats for the server: a snapshot of current key figures and an array with daily stats, by date. The amount of days to return is configurable in the server. Provides ***usage statistics***.",
+        "operationId": "statsAuthServer",
+        "tags": [
+          "stats"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Request-ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "***(automatically generated if not present)*** a unique identifier for this request"
+          },
+          {
+            "in": "query",
+            "name": "sortascending",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "description": "***(false if not present)*** Sort order of the results array, by date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage stats, with a snapshot of key figures and an array of daily stats.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsAuth"
+                },
+                "example": {
+                  "request_date:": "2022-05-31T14:58:54.787980",
                   "registered_users": 8,
                   "registered_users_login_service": 0,
                   "registered_users_active": 5,
@@ -2056,52 +4943,59 @@
                   "active_recovery": 0,
                   "daily_stats": [
                     {
-                      "date": "2020-05-30",
-                      "requests_number": "1",
-                      "requests_users": "0",
-                      "requests_adminusers": "0",
-                      "requests_sessions": "1",
-                      "requests_recovery": "0",
-                      "requests_per_minute": "0.0007",
-                      "endpoint_most_requests": "/sessions",
-                      "response_time_max": "0.9576",
-                      "response_time_min": "0.9576",
-                      "response_time_avg": "0.9576",
-                      "users_new": "0",
-                      "users_deleted": "0",
-                      "sessions_opened": "0",
-                      "sessions_closed": "0",
-                      "recovery_requests": "0",
-                      "requests_error_400": "0",
-                      "requests_error_401": "0",
-                      "requests_error_404": "0",
-                      "requests_error_405": "0",
-                      "requests_error_500": "0"
-                    },
-                    {
-                      "date": "2020-05-29",
-                      "requests_number": "18",
-                      "requests_users": "2",
-                      "requests_adminusers": "0",
-                      "requests_sessions": "14",
-                      "requests_recovery": "0",
-                      "requests_per_minute": "0.0125",
-                      "endpoint_most_requests": "/sessions",
-                      "response_time_max": "0.9812",
-                      "response_time_min": "0.0036",
-                      "response_time_avg": "0.4924",
-                      "users_new": "0",
-                      "users_deleted": "0",
-                      "sessions_opened": "0",
-                      "sessions_closed": "0",
-                      "recovery_requests": "0",
-                      "requests_error_400": "0",
-                      "requests_error_401": "0",
-                      "requests_error_404": "1",
-                      "requests_error_405": "0",
-                      "requests_error_500": "0"
+                      "date": "2022-05-30",
+                      "requests_number": 1,
+                      "requests_users": 0,
+                      "requests_adminusers": 0,
+                      "requests_sessions": 1,
+                      "requests_recovery": 0,
+                      "requests_per_minute": 0.013194444444444444,
+                      "response_time_avg": 2.2901225,
+                      "response_time_max": 4.343952,
+                      "response_time_min": 0.236293,
+                      "users_new": 0,
+                      "users_deleted": 0,
+                      "sessions_opened": 0,
+                      "sessions_closed": 0,
+                      "recovery_requests": 0,
+                      "requests_error_400": 0,
+                      "requests_error_401": 0,
+                      "requests_error_404": 0,
+                      "requests_error_405": 0,
+                      "requests_error_500": 0,
+                      "requests_error_503": 0
                     }
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "Bad request. Missing or wrong format for required arguments.",
+                  "data": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (-1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "code": -1,
+                  "message": "You are not authorized to access this resource.",
+                  "data": null
                 }
               }
             }
@@ -2109,7 +5003,7 @@
         },
         "security": [
           {
-            "api_key": []
+            "Session_Token": []
           }
         ]
       }
@@ -2185,6 +5079,10 @@
           "email": {
             "type": "string",
             "format": "email"
+          },
+          "online": {
+            "type": "boolean",
+            "readOnly": true
           },
           "account_closed": {
             "type": "boolean",
@@ -2277,9 +5175,218 @@
           "login_service": {
             "type": "boolean"
           },
+          "online": {
+            "type": "boolean",
+            "readOnly": true
+          },
           "account_closed": {
             "type": "boolean",
             "readOnly": true
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "UserNoAvatar": {
+        "type": "object",
+        "required": [
+          "username",
+          "first_name",
+          "last_name",
+          "contact"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "login_service": {
+            "type": "boolean"
+          },
+          "online": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "account_closed": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "PagedHighscores": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
+            "type": "string",
+            "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/HighscoresArray"
+          }
+        }
+      },
+      "HighscoresArray": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Highscore"
+        }
+      },
+      "Highscore": {
+        "type": "object",
+        "required": [
+          "username",
+          "next_level",
+          "achieved_level",
+          "difficulty_level",
+          "high_score",
+          "time_elapsed",
+          "gold_collected"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "next_level": {
+            "type": "integer"
+          },
+          "achieved_level": {
+            "type": "integer"
+          },
+          "difficulty_level": {
+            "type": "integer"
+          },
+          "time_elapsed": {
+            "type": "string"
+          },
+          "gold_collected": {
+            "type": "integer"
+          },
+          "high_score": {
+            "type": "number"
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "PagedGameProgress": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
+            "type": "string",
+            "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/GameProgressArray"
+          }
+        }
+      },
+      "GameProgressArray": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/GameProgress"
+        }
+      },
+      "GameProgress": {
+        "type": "object",
+        "required": [
+          "username",
+          "next_level",
+          "difficulty_level",
+          "time_elapsed",
+          "gold_collected"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "next_level": {
+            "type": "integer"
+          },
+          "difficulty_level": {
+            "type": "integer"
+          },
+          "time_elapsed": {
+            "type": "string"
+          },
+          "gold_collected": {
+            "type": "integer"
           },
           "date_created": {
             "type": "string",
@@ -2344,16 +5451,67 @@
           "$ref": "#/components/schemas/AdminUser"
         }
       },
+      "PagedAdminUsers": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
+            "type": "string",
+            "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/AdminUsers"
+          }
+        }
+      },
       "Users": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/User"
+          "$ref": "#/components/schemas/UserNoAvatar"
+        }
+      },
+      "PagedUsers": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
+            "type": "string",
+            "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/Users"
+          }
         }
       },
       "Picture": {
         "type": "object",
         "properties": {
-          "url": {
+          "isUrl": {
+            "type": "boolean"
+          },
+          "data": {
             "type": "string"
           }
         }
@@ -2370,51 +5528,72 @@
           }
         }
       },
+      "StatsAuth": {
+        "type": "object",
+        "properties": {
+          "request_date": {
+            "type": "string",
+            "format": "date",
+            "readOnly": true
+          },
+          "registered_users": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_users_login_service": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_users_active": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_users_closed": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_adminusers": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_adminusers_active": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "registered_adminusers_closed": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "active_sessions": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "active_recovery": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "daily_stats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyStatsAuth"
+            }
+          }
+        }
+      },
       "Stats": {
         "type": "object",
         "properties": {
           "request_date": {
             "type": "string",
+            "format": "date",
             "readOnly": true
           },
-          "requested_days": {
-            "type": "string",
+          "registered_higshscores": {
+            "type": "integer",
             "readOnly": true
           },
-          "registered_users": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_users_login_service": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_users_active": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_users_closed": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_adminusers": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_adminusers_active": {
-            "type": "string",
-            "readOnly": true
-          },
-          "registered_adminusers_closed": {
-            "type": "string",
-            "readOnly": true
-          },
-          "active_sessions": {
-            "type": "string",
-            "readOnly": true
-          },
-          "active_recovery": {
-            "type": "string",
+          "registered_game_progress": {
+            "type": "integer",
             "readOnly": true
           },
           "daily_stats": {
@@ -2426,88 +5605,199 @@
           }
         }
       },
+      "DailyStatsAuth": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "readOnly": true
+          },
+          "requests_number": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_adminusers": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_sessions": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_recovery": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_per_minute": {
+            "type": "number",
+            "readOnly": true
+          },
+          "response_time_max": {
+            "type": "number",
+            "readOnly": true
+          },
+          "response_time_min": {
+            "type": "number",
+            "readOnly": true
+          },
+          "response_time_avg": {
+            "type": "number",
+            "readOnly": true
+          },
+          "users_new": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "users_deleted": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "sessions_opened": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "sessions_closed": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "recovery_requests": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_400": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_401": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_404": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_405": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_500": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_503": {
+            "type": "integer",
+            "readOnly": true
+          }
+        }
+      },
       "DailyStats": {
         "type": "object",
         "properties": {
           "date": {
             "type": "string",
+            "format": "date",
             "readOnly": true
           },
           "requests_number": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true
           },
-          "requests_adminusers": {
-            "type": "string",
+          "requests_highscores": {
+            "type": "integer",
             "readOnly": true
           },
-          "requests_sessions": {
-            "type": "string",
+          "requests_game_progress": {
+            "type": "integer",
             "readOnly": true
           },
-          "requests_recovery": {
-            "type": "string",
+          "requests_auth_api": {
+            "type": "integer",
             "readOnly": true
           },
           "requests_per_minute": {
-            "type": "string",
-            "readOnly": true
-          },
-          "endpoint_most_requests": {
-            "type": "string",
+            "type": "number",
             "readOnly": true
           },
           "response_time_max": {
-            "type": "string",
+            "type": "number",
             "readOnly": true
           },
           "response_time_min": {
-            "type": "string",
+            "type": "number",
             "readOnly": true
           },
           "response_time_avg": {
-            "type": "string",
+            "type": "number",
             "readOnly": true
           },
-          "users_new": {
-            "type": "string",
+          "highscores_new": {
+            "type": "integer",
             "readOnly": true
           },
-          "users_deleted": {
-            "type": "string",
+          "highscores_deleted": {
+            "type": "integer",
             "readOnly": true
           },
-          "sessions_opened": {
-            "type": "string",
+          "game_progress_saved": {
+            "type": "integer",
             "readOnly": true
           },
-          "sessions_closed": {
-            "type": "string",
+          "game_progress_updated": {
+            "type": "integer",
             "readOnly": true
           },
-          "recovery_requests": {
-            "type": "string",
+          "game_progress_deleted": {
+            "type": "integer",
             "readOnly": true
           },
           "requests_error_400": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true
           },
           "requests_error_401": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true
           },
           "requests_error_404": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true
           },
           "requests_error_405": {
-            "type": "string",
+            "type": "integer",
             "readOnly": true
           },
           "requests_error_500": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "requests_error_503": {
+            "type": "integer",
+            "readOnly": true
+          }
+        }
+      },
+      "PagedRecoveries": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
             "type": "string",
             "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/Recoveries"
           }
         }
       },
@@ -2525,6 +5815,10 @@
         "properties": {
           "username": {
             "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
           },
           "recovery_key": {
             "type": "string"
@@ -2567,6 +5861,30 @@
           }
         }
       },
+      "PagedSessions": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "limit": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "next": {
+            "type": "string",
+            "readOnly": true
+          },
+          "previous": {
+            "type": "string",
+            "readOnly": true
+          },
+          "results": {
+            "$ref": "#/components/schemas/Sessions"
+          }
+        }
+      },
       "Sessions": {
         "type": "array",
         "items": {
@@ -2577,11 +5895,15 @@
         "type": "object",
         "required": [
           "username",
+          "user_role",
           "session_token",
           "expires"
         ],
         "properties": {
           "username": {
+            "type": "string"
+          },
+          "user_role": {
             "type": "string"
           },
           "session_token": {
@@ -2609,7 +5931,7 @@
             "type": "string"
           },
           "value": {
-            "type": "object"
+            "type": "string"
           }
         }
       },
@@ -2783,7 +6105,7 @@
             "type": "string",
             "readOnly": true
           },
-          "response": {
+          "response_status": {
             "type": "string",
             "readOnly": true
           }
@@ -2835,9 +6157,10 @@
       }
     },
     "securitySchemes": {
-      "api_key": {
+      "Session_Token": {
+        "description": "Please log in by making a ***POST*** to sessions, using valid crendentials, and enter the '***session_token***' returned by the server, in order to use protected endpoints.",
         "type": "apiKey",
-        "name": "X-Client-ID",
+        "name": "X-Auth-Token",
         "in": "header"
       }
     }

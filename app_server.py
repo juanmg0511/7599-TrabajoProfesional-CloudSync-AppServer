@@ -232,7 +232,10 @@ API_URL = config.api_path + '/swagger-data'
 # Registro del blueprint, disponibiliza Swagger-UI en el server
 swaggerui_blueprint = get_swaggerui_blueprint(
    SWAGGER_URL,
-   API_URL
+   API_URL,
+   config={
+    'docExpansion': 'none'
+   }
 )
 app.register_blueprint(swaggerui_blueprint)
 
@@ -251,7 +254,7 @@ Talisman(app=app,
          force_https_permanent=True,
          content_security_policy={
             "default-src": "'self'",
-            "style-src": "'self' 'unsafe-inline';",
+            "style-src": "'self' 'unsafe-inline'",
             "img-src": "'self' data: validator.swagger.io",
             "script-src": "'self' 'unsafe-inline'"
          })
